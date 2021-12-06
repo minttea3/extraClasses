@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cs.study.radioselect.mapper.RadioSelectMapper">
+    <select id="selectRadioSelectOne" resultType="radioSelectVO" parameterType="radioSelectVO">
+        SELECT seq
+             , user_name
+             , radio1
+             , radio2
+             , select1
+             , select2
+             , to_char(create_dt, 'YYYY-MM-DD HH24:MI:SS') as create_dt
+             , to_char(update_dt, 'YYYY-MM-DD HH24:MI:SS') as update_dt
+        FROM kcs.tb_radio_select
+        WHERE seq = #{seq}
+    </select>
+
+    <select id="selectRadioSelectList" resultType="radioSelectVO" parameterType="radioSelectVO">
+        SELECT
+              a.seq
+            , a.user_name
+            , (select dept_name from kcs.tb_dept where dept_code = a.radio1) as radio1
+            , (select dept_name from kcs.tb_dept where dept_code = a.radio2) as radio2
+            , (select dept_name from kcs.tb_dept where dept_code = a.select1) as select1
+            , (select dept_name from kcs.tb_dept where dept_code = a.select2) as select2
+            , to_char(a.create_dt, 'YYYY-MM-DD HH24:MI:SS') as create_dt
+            , to_char(a.update_dt, 'YYYY-MM-DD HH24:MI:SS') as update_dt
+        FROM kcs.tb_radio_select a
+        <where>
+            <if test="userName != null and !userName.equals('')">
+                AND user_name LIKE '%' || #{userName} || '%'
+            </if>
+        </where>
+        ORDER BY seq
+    </select>
+
+    <insert id="insertRadioSelect" parameterType="radioSelectVO">
+        INSERT INTO kcs.tb_radio_select (
+             seq
+            , user_name
+            , radio1
+            , radio2
+            , select1
+            , select2
+        ) VALUES (
+               #{seq}
+             , #{userName}
+             , #{radio1}
+             , #{radio2}
+             , #{select1}
+             , #{select2}
+        )
+    </insert>
+
+    <update id="updateRadioSelect" parameterType="radioSelectVO">
+        UPDATE kcs.tb_radio_select SET
+            user_name  = #{userName}
+            , radio1  = #{radio1}
+            , radio2  = #{radio2}
+            , select1  = #{select1}
+            , select2  = #{select2}
+            , update_dt  = current_timestamp
+        WHERE seq = #{seq}
+    </update>
+
+    <delete id="deleteRadioSelect" parameterType="radioSelectVO">
+        DELETE FROM kcs.tb_radio_select
+        WHERE seq = #{seq}
+    </delete>
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs.study.sample.mapper.CafeMenuMapper">
+    <select id="cafeMenuSelectOne" resultType="cafeMenuVO" parameterType="cafeMenuVO">
+         SELECT c_code
+             ,c_menu
+             ,c_origin
+             ,c_price
+        FROM kcs.cafe_menu_kej
+        WHERE c_code = #{cCode}
+    </select>
+    <select id="cafeMenuSelectList" resultType="cafeMenuVO" parameterType="cafeMenuVO">
+        SELECT c_code
+             ,c_menu
+             ,c_origin
+             ,c_price
+        FROM kcs.cafe_menu_kej
+        <where>
+            <if test="cCode != null and !cCode.equals('')">
+                AND c_code LIKE '%' || #{cCode} || '%'
+            </if>
+            <if test="cMenu != null and !cMenu.equals('')">
+                AND c_menu LIKE '%' || #{cMenu} || '%'
+            </if>
+            <if test="cOrigin != null and !cOrigin.equals('')">
+                AND c_origin LIKE '%' || #{cOrigin} || '%'
+            </if>
+            <if test="cPrice != null and !cPrice.equals('')">
+                AND c_price LIKE '%' || #{cPrice} || '%'
+            </if>
+          <!--   <if test="c_incoming != null and !c_incoming.equals('')">
+                AND c_incoming = #{c_incoming}
+            </if> -->
+        </where>
+        ORDER BY c_code
+    </select>
+  <update id="cafeMenusave" parameterType="cafeMenuVO">
+        WITH UPSERT AS (
+        UPDATE kcs.cafe_menu_kej
+        SET c_menu  = #{cMenu}
+          , c_origin = #{cOrigin}
+          , c_price = #{cPrice}
+        WHERE c_code = #{cCode} RETURNING *
+)
+        INSERT
+        INTO kcs.cafe_menu_kej ( c_code
+                       , c_menu
+                       , c_origin
+                       , c_price)
+        SELECT #{cCode}
+             , #{cMenu}
+             , #{cOrigin}
+             , #{cPrice} WHERE NOT EXISTS ( SELECT * FROM UPSERT )
+    </update>
+
+    <delete id="cafeMenudelete" parameterType="cafeMenuVO">
+        DELETE
+        FROM kcs.cafe_menu_kej
+        WHERE c_code = #{cCode}
+    </delete>
+</mapper>

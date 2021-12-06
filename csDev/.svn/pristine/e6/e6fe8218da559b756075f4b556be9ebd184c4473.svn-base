@@ -1,0 +1,55 @@
+package com.cs.study.signup.controller;
+
+import com.cs.study.radioselect.service.DeptService;
+import com.cs.study.radioselect.vo.DeptVO;
+import com.cs.study.signup.service.SignupServiceLmg;
+import com.cs.study.signup.vo.SignupVOLmg;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+
+@Controller
+public class SignupControllerLmg {
+
+    private final DeptService deptService;
+    private final SignupServiceLmg signupServiceLmg;
+
+    public SignupControllerLmg(DeptService deptService, SignupServiceLmg signupServiceLmg) {
+        this.deptService = deptService;
+        this.signupServiceLmg = signupServiceLmg;
+    }
+
+    @GetMapping("/signup/signupLmg")
+    public String signupLmg(Model model, SignupVOLmg SignupVOLmg){
+        DeptVO question = new DeptVO();
+        question.setDeptGrp("signup_question");
+        List<DeptVO> questionlist = deptService.selectDeptList( question );
+        model.addAttribute("questionlist", questionlist);
+
+        DeptVO phone = new DeptVO();
+        phone.setDeptGrp("signup_phone");                                                         
+        List<DeptVO> phonelist = deptService.selectDeptList( phone );
+        model.addAttribute("phonelist", phonelist);
+        
+        DeptVO terms = new DeptVO();
+        terms.setDeptGrp("signup_terms");                                                         
+        List<DeptVO> termslist = deptService.selectDeptList( terms );
+        model.addAttribute("termslist", termslist);
+        
+        return "signup/signupLmg";
+    }
+    
+    @PostMapping("/signup/signupLmg")
+    public String Singupinsert(Model model, SignupVOLmg signupVOLmg, @RequestParam(value="action", required=true) String action){
+        if ( "insert".equals(action) ){
+            int insertCnt = signupServiceLmg.insertRadioSelect(signupVOLmg);
+        }else if ( "delete".equals(action) ){
+            int deleteCnt = signupServiceLmg.deleteRadioSelect(signupVOLmg);
+        }
+        return "/signup/signupLmg";
+    }
+}

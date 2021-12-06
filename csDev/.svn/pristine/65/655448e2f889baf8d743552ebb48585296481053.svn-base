@@ -1,0 +1,28 @@
+package com.cs.study.signup.vo;
+
+import lombok.Data;
+import org.apache.ibatis.type.Alias;
+
+@Data
+@Alias("signupVOLmg")
+public class SignupVOLmg {
+	
+	private String userId;
+	private String userPw;
+	private String userPwchk;
+	private String pwQuestion;
+	private String pwAnswer;
+	private String nickname;
+	private String PhoneNumber;
+	private String PhoneNumber1;
+	private String PhoneNumber2;
+	private String PhoneNumber3;
+	private String gender;
+	private String address1;
+	private String address2;
+	private String termsInfoYn;
+	private String termsBuyYn;
+	private String termsSellYn;
+
+}
+

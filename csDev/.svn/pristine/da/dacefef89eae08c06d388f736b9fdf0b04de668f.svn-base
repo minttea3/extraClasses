@@ -1,0 +1,52 @@
+package com.cs.study.commcode.controller;
+
+import com.cs.study.commcode.service.CommCodeService;
+import com.cs.study.commcode.vo.CommCodeMstVO;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+
+@Controller
+public class CommCodeController {
+
+    private final CommCodeService commCodeService;
+
+    public CommCodeController(CommCodeService commCodeService) {
+        this.commCodeService = commCodeService;
+    }
+
+    @GetMapping("/commcode/commCodeMstList")
+    public String commCodeMstList(Model model, CommCodeMstVO commCodeMstVO){
+
+        List<CommCodeMstVO> selectCommCodeMstList = commCodeService.selectCommCodeMstList(commCodeMstVO);
+        model.addAttribute("commCodeMstList", selectCommCodeMstList);
+        model.addAttribute("mstVO", commCodeMstVO);
+        return "commcode/commCodeMstList";
+    }
+
+    @GetMapping("/commcode/commCodeMstForm")
+    public String commCodeMstForm(Model model, CommCodeMstVO commCodeMstVO){
+        if (!StringUtils.isEmpty( commCodeMstVO.getMstCd() )){
+            CommCodeMstVO selectCommCodeMst = commCodeService.selectCommCodeMstOne(commCodeMstVO);
+            model.addAttribute("mstVO", selectCommCodeMst);
+        }
+        return "commcode/commCodeMstForm";
+    }
+
+    @PostMapping("/commcode/commCodeMstFormSave")
+    public String commCodeMstFormSave(Model model, CommCodeMstVO commCodeMstVO, @RequestParam(value="action", required=true) String action){
+        if ( "insert".equals(action) ){
+            int insertCnt = commCodeService.insertCommCodeMst(commCodeMstVO);
+        }else if ( "update".equals(action) ){
+            int updateCnt = commCodeService.updateCommCodeMst(commCodeMstVO);
+        }else if ( "delete".equals(action) ){
+            int deleteCnt = commCodeService.deleteCommCodeMst(commCodeMstVO);
+        }
+        return "redirect:/commcode/commCodeMstList";
+    }
+}

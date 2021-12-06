@@ -1,0 +1,170 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: kimchangsu
+  Date: 2021. 8. 23.
+  Time: 오후 8:46
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<html>
+<head>
+    <meta charset="utf-8">
+    <%@ include file="/WEB-INF/jsp/common/header.jsp" %>
+</head>
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Navbar -->
+    <jsp:include page="/WEB-INF/jsp/common/nav.jsp" />
+    <!-- End of Navbar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <jsp:include page="/WEB-INF/jsp/common/topbar.jsp" />
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">회원 리스트 김영준</h1>
+                </div>
+
+               <!-- 요기가 컨텐츠 -->
+
+                 <form:form action="/signup/signupListKyj" method="get">
+                    <div class="form-row align-items-center">
+                        <div class="col-auto">
+                            <label class="sr-only" for="userId">User ID</label>
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">User ID</div>
+                                </div>
+                                <input type="text" class="form-control" id="userId" placeholder="UserID" name="userId" value="${signupVO2.userId}">
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <label class="sr-only" for="nickname">nickname</label>
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">nickname</div>
+                                </div>
+                                <input type="text" class="form-control" id="nickname" placeholder="nickname" name="nickname" value="${signupVO2.nickname}">
+                            </div>
+                        </div>
+                        <div class="col-auto" >
+                            <label class="sr-only" for="gender">gender</label>
+                            <div class="input-group mb-2" style="border: 1px solid #d3d3d3; border-radius: 0.5em;">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">gender</div>
+                                </div>
+                                <%-- <input type="text" class="form-control" id="gender" placeholder="gender" name="gender" value="${signupVO2.gender}"> --%>
+                           		<div  style="padding-top: 10px;   height: 23px; ">
+	                           		<c:forEach var="rdS" items="${selectGenderList}" varStatus="vsg">
+		                           		&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="gender${vsg.count }" name="gender" value="${rdS.dtlCd }"   <c:if test="${signupVO2.gender eq rdS.dtlCd }"> checked="checked"</c:if>>
+		                           		<label for="gender${vsg.count }" >${rdS.dtlNm}</label>
+	                           		</c:forEach>&nbsp;&nbsp;
+                           		</div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button name="action" class="btn btn-info" type="submit">조회</button>
+                        </div>
+                    </div>
+                </form:form> 
+                <br /><br />
+                 <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col" style="width: 2%;"><input type="checkbox" id="allCb" name="allCb" value="Y"></th>
+                        <th scope="col" style="width: 1%;">#</th>
+                        <th scope="col" style="width: 10%;">아이디</th>
+                        <th scope="col" style="width: 10%;">비밀번호</th>
+                        <th scope="col" style="width: 10%;">비밀번호 질문</th>
+                        <th scope="col" style="width: 10%;">비밀번호 답변</th>
+                        <th scope="col" style="width: 5%;">닉네임</th>
+                        <th scope="col" style="width: 13%;">연락처</th>
+                        <th scope="col" style="width: 10%;">성별</th>
+                        <th scope="col" style="width: 10%;">주소1</th>
+                        <th scope="col" style="width: 10%;">주소2</th>
+                        <th scope="col" style="width: 5%;">개인정보 동의</th>
+                        <th scope="col" style="width: 5%;">구매약관 동의</th>
+                        <th scope="col" style="width: 5%;">판매약관 동의</th>
+               
+                    </tr>
+                    </thead>
+                    <tbody id="cbBody">
+                    <c:forEach var="list" items="${selectSignupKyj}" varStatus="status">
+                        <tr>
+                            <td scope="row" >
+                            	<input type="checkbox" value="Y" id="cb" name="cb">
+							</td>
+                            <td scope="row"><c:out value="${status.count}" /></td>
+                            <td><input type="text" value="${list.userId}"></a></td>
+                            <td><input type="text" value="${list.userPw}"> </td>
+                            <td>
+	                            <select>
+	                            	<c:forEach var ="pwQ" items="${selectPwQuestionList }">
+	                            	<option <c:if test="${pwQ.dtlCd eq list.pwQuestion}">selected="selected" </c:if>>${pwQ.dtlNm}</option>
+	                            	</c:forEach>
+	                            </select>
+                            </td>
+                            <td><input type="text" value="${list.pwAnswer}"></td>
+                            <td><input type="text" value="${list.nickname}"></td>
+                            <td><%-- <input type="text" value="${list.phoneNumber}"> //${list.phoneNumber1 }///${list.phoneNumber2 }////${list.phoneNumber3 } --%>
+                            	<select>
+                            		<c:forEach var="ph1" items="${selectPhoneNumberList }">
+                            			<option value="${ph1.dtlCd }" <c:if test="${list.phoneNumber1 eq ph1.dtlCd}">selected="selected"</c:if>>${ph1.dtlNm }</option>
+                            		</c:forEach>
+                            		<input type="text" value="${list.phoneNumber2 }" name="phoneNumber2">
+                            		<input type="text" value="${list.phoneNumber3 }" name="phoneNumber2">
+                            	</select>
+                            </td>
+                            <td>
+                           	 <c:forEach var="gd"  items="${selectGenderList}"  varStatus="vs">
+                            	<input  type="radio" id="gender${vs.count }" name="gender${status.count }" value="${gd.dtlCd }" <c:if test="${list.gender eq gd.dtlCd }">checked="checked"</c:if> >
+                           		<label for="gender${vs.count }" >${gd.dtlNm }</label>
+                           	</c:forEach>
+                            	
+                            	
+                            </td>
+                            <td><input type="text" value="${list.address1}"></td>
+                            <td><input type="text" value="${list.address2}"></td>
+                            <td><%-- ${list.termsInfoYn} --%>
+                            	<input type="checkbox" name="termsInfoYn" value="Y" <c:if test="${list.termsInfoYn eq 'Y' }">checked="checked"</c:if>>
+                            </td>
+                            <td><%-- ${list.termsBuyYn} --%>
+                            	<input type="checkbox" name="termsBuyYn" value="Y" <c:if test="${list.termsBuyYn eq 'Y' }">checked="checked"</c:if>>
+                            </td>
+                            <td><%-- ${list.termsSellYn} --%>
+                            	<input type="checkbox" name="termsSellYn" value="Y" <c:if test="${list.termsSellYn eq 'Y'}">checked="checked"</c:if>> 
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table> 
+                <!-- 요기가 컨텐츠 끝 -->
+
+            </div>
+        </div>
+        <!-- Footer -->
+        <%@ include file="/WEB-INF/jsp/common/footer.jsp" %>
+        <!-- End of Footer -->
+    </div>
+    <!-- End of Content Wrapper -->
+</div>
+<!-- End of Page Wrapper -->
+
+<script>
+
+</script>
+</body>
+</html>

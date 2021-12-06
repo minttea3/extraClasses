@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cs.study.commcode.mapper.CommCodeMapper">
+    <select id="selectCommCodeMstOne" resultType="commCodeMstVO" parameterType="commCodeMstVO">
+        SELECT /* CommCodeMapper.selectCommCodeMstOne 공통코드 마스터 단일 조회 */
+               mst_cd
+             , mst_nm
+             , use_yn
+        FROM kcs.tb_comm_code_mst
+        WHERE mst_cd = #{mstCd}
+    </select>
+
+    <select id="selectCommCodeMstList" resultType="commCodeMstVO" parameterType="commCodeMstVO">
+        SELECT /* CommCodeMapper.selectCommCodeMstList 공통코드 마스터 리스트 조회 */
+              mst_cd
+            , mst_nm
+            , use_yn
+            , create_user
+            , create_program
+            , create_dt
+            , update_user
+            , update_program
+            , update_dt
+        FROM kcs.tb_comm_code_mst
+        <where>
+            <if test="mstCd != null and !mstCd.equals('')">
+                AND mst_cd LIKE '%' || #{mstCd} || '%'
+            </if>
+            <if test="mstNm != null and !mstNm.equals('')">
+                AND mst_nm LIKE '%' || #{mstNm} || '%'
+            </if>
+            <if test="useYn != null and !useYn.equals('')">
+                AND use_yn = #{useYn}
+            </if>
+        </where>
+        ORDER BY mst_cd
+    </select>
+
+    <insert id="insertCommCodeMst" parameterType="commCodeMstVO">
+        INSERT INTO kcs.tb_comm_code_mst ( /* CommCodeMapper.insertCommCodeMst 공통코드 마스터 등록 */
+              mst_cd
+            , mst_nm
+            , use_yn
+        ) VALUES (
+               #{mstCd}
+             , #{mstNm}
+             , #{useYn}
+        )
+    </insert>
+
+    <update id="updateCommCodeMst" parameterType="commCodeMstVO">
+        UPDATE kcs.tb_comm_code_mst SET /* CommCodeMapper.updateCommCodeMst 공통코드 마스터 수정 */
+            mst_nm  = #{mstNm}
+          , use_yn = #{useYn}
+        WHERE mst_cd = #{mstCd}
+    </update>
+
+    <delete id="deleteCommCodeMst" parameterType="commCodeMstVO">
+        DELETE FROM kcs.tb_comm_code_mst /* CommCodeMapper.insertCommCodeMst 공통코드 마스터 삭제 */
+        WHERE mst_cd = #{mstCd}
+    </delete>
+
+
+
+    <select id="selectCommCodeDtlOne" resultType="commCodeDtlVO" parameterType="commCodeDtlVO">
+        SELECT /* CommCodeMapper.selectCommCodeDtlOne 공통코드 디테일 단일 조회 */
+               mst_cd
+             , dtl_cd
+             , dtl_nm
+             , use_yn
+             , code_grp
+             , etc1
+             , etc2
+             , etc3
+             , etc4
+             , etc5
+        FROM kcs.tb_comm_code_dtl
+        WHERE mst_cd = #{mstCd}
+        and   dtl_cd = #{dtlCd}
+    </select>
+
+    <select id="selectCommCodeDtlList" resultType="commCodeDtlVO" parameterType="commCodeDtlVO">
+        SELECT /* CommCodeMapper.selectCommCodeDtlList 공통코드 디테일 리스트 조회 */
+              mst_cd
+            , dtl_cd
+            , dtl_nm
+            , use_yn
+            , code_grp
+            , etc1
+            , etc2
+            , etc3
+            , etc4
+            , etc5
+            , create_user
+            , create_program
+            , create_dt
+            , update_user
+            , update_program
+            , update_dt
+        FROM kcs.tb_comm_code_dtl
+        <where>
+            <if test="mstCd != null and !mstCd.equals('')">
+                AND mst_cd LIKE '%' || #{mstCd} || '%'
+            </if>
+            <if test="dtlCd != null and !dtlCd.equals('')">
+                AND dtl_cd LIKE '%' || #{dtlCd} || '%'
+            </if>
+            <if test="dtlNm != null and !dtlNm.equals('')">
+                AND dtl_nm LIKE '%' || #{dtlNm} || '%'
+            </if>
+            <if test="useYn != null and !useYn.equals('')">
+                AND use_yn = #{useYn}
+            </if>
+        </where>
+        ORDER BY mst_cd
+    </select>
+
+    <insert id="insertCommCodeDtl" parameterType="commCodeDtlVO">
+        INSERT INTO kcs.tb_comm_code_dtl ( /* CommCodeMapper.insertCommCodeDtl 공통코드 디테일 등록 */
+               mst_cd
+             , dtl_cd
+             , dtl_nm
+             , use_yn
+             , code_grp
+             , etc1
+             , etc2
+             , etc3
+             , etc4
+             , etc5
+        ) VALUES (
+               #{mstCd}
+             , #{dtlCd}
+             , #{dtlNm}
+             , #{useYn}
+             , #{codeGrp}
+             , #{etc1}
+             , #{etc2}
+             , #{etc3}
+             , #{etc4}
+             , #{etc5}
+        )
+    </insert>
+
+    <update id="updateCommCodeDtl" parameterType="commCodeDtlVO">
+        UPDATE kcs.tb_comm_code_dtl SET /* CommCodeMapper.updateCommCodeDtl 공통코드 디테일 수정 */
+            dtl_nm  = #{dtlNm}
+          , use_yn = #{useYn}
+          , code_grp = #{codeGrp}
+          , etc1 = #{etc1}
+          , etc2 = #{etc2}
+          , etc3 = #{etc3}
+          , etc4 = #{etc4}
+          , etc5 = #{etc5}
+        WHERE mst_cd = #{mstCd}
+        AND dtl_cd = #{dtlCd}
+    </update>
+
+    <delete id="deleteCommCodeDtl" parameterType="commCodeDtlVO">
+        DELETE FROM kcs.tb_comm_code_dtl /* CommCodeMapper.deleteCommCodeDtl 공통코드 디테일 삭제 */
+        WHERE mst_cd = #{mstCd}
+        AND dtl_cd = #{dtlCd}
+    </delete>
+</mapper>

@@ -1,0 +1,86 @@
+package com.cs.study.signup.controller;
+
+import com.cs.study.radioselect.service.DeptService;
+import com.cs.study.radioselect.vo.DeptVO;
+import com.cs.study.signup.service.SignupServiceLmg;
+import com.cs.study.signup.vo.SignupVOLmg;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+
+@Controller
+public class SignupControllerLmg {
+
+    private final DeptService deptService;
+    private final SignupServiceLmg signupServiceLmg;
+
+    public SignupControllerLmg(DeptService deptService, SignupServiceLmg signupServiceLmg) {
+        this.deptService = deptService;
+        this.signupServiceLmg = signupServiceLmg;
+    }
+    
+    
+    @GetMapping("signupListLmg")
+    public String signupListLmg(Model model, SignupVOLmg SignupVOLmg){
+
+        List<SignupVOLmg> signupListLmg = signupServiceLmg.signupListLmg(SignupVOLmg);
+        model.addAttribute("signupListLmg", signupListLmg);
+        model.addAttribute("SignupVOLmg", SignupVOLmg);
+       
+        return "signup/signupListLmg";
+    }
+    
+    
+    
+    @GetMapping("signupLmg")
+    public String signupLmg(Model model, SignupVOLmg signupVOLmg){
+    	  
+          model.addAttribute("signupVOLmg", signupVOLmg);
+    	
+    	
+    	DeptVO question = new DeptVO();
+        question.setDeptGrp("signup_question");
+        List<DeptVO> questionlist = deptService.selectDeptList( question );
+        model.addAttribute("questionlist", questionlist);
+
+        DeptVO phone = new DeptVO();
+        phone.setDeptGrp("signup_phone");                                                         
+        List<DeptVO> phonelist = deptService.selectDeptList( phone );
+        model.addAttribute("phonelist", phonelist);
+        
+        DeptVO terms = new DeptVO();
+        terms.setDeptGrp("signup_terms");                                                         
+        List<DeptVO> termslist = deptService.selectDeptList( terms );
+        model.addAttribute("termslist", termslist);
+        if (termslist.size() > 0){
+        	model.addAttribute("signupTerms", termslist.get(0).getDeptName());
+        }
+        
+        return "signup/signupLmg";
+    }
+    
+    @PostMapping("signupLmgpost")
+    public String Singupinsert(Model model, SignupVOLmg signupVOLmg, @RequestParam(value="action", required=true) String action){
+		
+		 if ( "insert".equals(action) ){ int insertCnt =
+		  signupServiceLmg.insertRadioSelect(signupVOLmg); 
+		 		if (insertCnt == 0) { 
+			  return "signup/signupLmg"; 
+			  
+		  	}
+		  
+		  }
+
+			/*
+			 * else if ("delete".equals(action)) { int deleteCnt =
+			 * signupServiceLmg.deleteRadioSelect(signupVOLmg); }
+			 */
+			
+        return "signup/signupLmg";
+    }
+}

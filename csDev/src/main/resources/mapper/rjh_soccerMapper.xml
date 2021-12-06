@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cs.study.sample.mapper.rjh_soccerMapper">
+    <select id="selectSampleOne" resultType="rjh_soccerVO" parameterType="rjh_soccerVO">
+        SELECT s_player
+             , s_age
+             , s_team
+             , s_position
+             , s_country
+        FROM kcs.rjh_soccer
+        WHERE s_player = #{sPlayer}
+    </select>
+
+    <select id="selectSampleList" resultType="rjh_soccerVO" parameterType="rjh_soccerVO">
+        SELECT s_player
+             , s_age
+             , s_team
+             , s_position
+             , s_country
+        FROM kcs.rjh_soccer
+        <where>
+            <if test="sPlayer != null and !sPlayer.equals('')">
+                AND s_player LIKE '%' || #{sPlayer} || '%'
+            </if>
+        </where>
+        ORDER BY s_player
+    </select>
+
+    <update id="saveSample" parameterType="rjh_soccerVO">
+        WITH UPSERT AS (
+        UPDATE kcs.rjh_soccer
+        SET s_age  = #{sAge}
+         , s_team  = #{sTeam}
+          , s_position = #{sPosition}
+          , s_country = #{sCountry}
+        WHERE s_player = #{sPlayer} RETURNING *
+)
+        INSERT
+        INTO kcs.rjh_soccer ( s_player
+             , s_age
+             , s_team
+             , s_position
+             , s_country)
+        SELECT #{sPlayer}
+             , #{sAge}
+             , #{sTeam}
+             , #{sPosition}
+             , #{sCountry}
+              WHERE NOT EXISTS ( SELECT * FROM UPSERT )
+    </update>
+
+    <delete id="deleteSample" parameterType="rjh_soccerVO">
+        DELETE
+        FROM kcs.rjh_soccer
+        WHERE s_player = #{sPlayer}
+    </delete>
+</mapper>

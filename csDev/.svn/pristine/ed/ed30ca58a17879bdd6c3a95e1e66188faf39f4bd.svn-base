@@ -1,0 +1,40 @@
+package com.cs.study.signup.service;
+
+
+
+import org.springframework.stereotype.Service;
+
+import com.cs.study.signup.mapper.SignupKyjMapper;
+import com.cs.study.signup.vo.SignupKyjVO;
+
+import java.util.List;
+
+@Service
+public class SignupKyjService {
+    public final SignupKyjMapper SignupKyjService;
+
+
+    public SignupKyjService(SignupKyjMapper signupMapper) {
+        this.SignupKyjService = signupMapper;
+    }
+
+    public SignupKyjVO selectRadioSelectOne(SignupKyjVO SignupKyjVO){
+        return SignupKyjService.selectRadioSelectOne(SignupKyjVO);
+    }
+
+    public List<SignupKyjVO> selectRadioSelectList(SignupKyjVO SignupKyjVO) {
+        return SignupKyjService.selectRadioSelectList(SignupKyjVO);
+    }
+
+    public int insertRadioSelect(SignupKyjVO SignupKyjVO) {
+        return SignupKyjService.insertRadioSelect(SignupKyjVO);
+    }
+
+    public int updateRadioSelect(SignupKyjVO SignupKyjVO) {
+        return SignupKyjService.updateRadioSelect(SignupKyjVO);
+    }
+
+    public int deleteRadioSelect(SignupKyjVO SignupKyjVO) {
+        return SignupKyjService.deleteRadioSelect(SignupKyjVO);
+    }
+}

@@ -1,0 +1,50 @@
+//����
+package com.cs.study.signup.service;
+
+import com.cs.study.signup.mapper.SignupMapper;
+import com.cs.study.signup.vo.SignupVO;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class SignupService {
+    public final SignupMapper signupMapper;
+
+    public SignupService(SignupMapper signupMapper) {
+        this.signupMapper = signupMapper;
+    }
+
+    public boolean insertSignup(SignupVO signupVO){
+
+        // 1. 패스워드 일치 확인
+        // 1-1. 값이 다르면? : 재시도
+        if ( !signupVO.getUserPw().equals( signupVO.getUserPwChk() ) ) {
+            // 서비스 -> 컨트롤러
+            // 컨트롤러에서 서비스가 정상작동한지 체크해서 
+            // 정상이라면? 화면이동하고
+            // 비정상이라면? 회원가입 화면으로 signupVO 가지고 돌아가라 동기적방식으로 추가한다.
+            return false;
+            return false;
+        }
+
+        // 2. 전화번호 합치기
+        signupVO.setPhoneNumber( signupVO.getPhoneNumber1() + signupVO.getPhoneNumber2() + signupVO.getPhoneNumber3() );
+
+        //문자열 사이에 / - . 원하는거 입력해서 값 넘겨주기,
+        
+        // 3. 체크박스 Y아닐경우 체크
+        if (signupVO.getTermsBuyYn() == null) {
+            signupVO.setTermsBuyYn("N");
+        }
+        if (signupVO.getTermsInfoYn() == null) {
+            signupVO.setTermsInfoYn("N");
+        }
+        if (signupVO.getTermsSellYn() == null) {
+            signupVO.setTermsSellYn("N");
+        }
+        signupMapper.insertSignup(signupVO);
+        return true;
+    }
+
+}

@@ -1,0 +1,37 @@
+package com.cs.study.signup.service;
+
+import com.cs.study.signup.mapper.SignupMapper;
+import com.cs.study.signup.mapper.SignupMapperJsw;
+import com.cs.study.signup.vo.SignupVOJsw;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class SignupServiceJsw {
+    public final SignupMapperJsw signMapper;
+
+    public SignupServiceJsw(SignupMapperJsw signMapper) {
+        this.signMapper = signMapper;
+    }
+
+    public SignupVOJsw selectSignUpOne(SignupVOJsw jswSignVO){
+        return signMapper.selectSignUpOne(jswSignVO);
+    }
+
+    public List<SignupVOJsw> selectSignUpList(SignupVOJsw jswSignVO) {
+        return signMapper.selectSignUpList(jswSignVO);
+    }
+
+    public int insertSignUp(SignupVOJsw jswSignVO) {
+        return signMapper.insertSignUp(jswSignVO);
+    }
+
+    public int updateSignUp(SignupVOJsw jswSignVO) {
+        return signMapper.updateSignUp(jswSignVO);
+    }
+
+    public int deleteSignUp(SignupVOJsw jswSignVO) {
+        return signMapper.deleteSignUp(jswSignVO);
+    }
+}

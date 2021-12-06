@@ -1,0 +1,79 @@
+package com.cs.study.signup.service;
+import java.util.List;
+
+
+import java.util.regex.Pattern;
+import org.springframework.stereotype.Service;
+import com.cs.study.signup.mapper.SignupMapper;
+import com.cs.study.signup.mapper.SignupMapperWis;
+import com.cs.study.signup.vo.SignupVOWis;
+
+@Service
+public class SignupServiceWis3 {
+    public final SignupMapper signupMapper;
+    public final SignupMapperWis signupMapperWis;
+    
+
+    public SignupServiceWis3(SignupMapper signupMapper,SignupMapperWis signupMapperWis) {
+        this.signupMapper = signupMapper;
+        this.signupMapperWis = signupMapperWis;
+    }
+    
+    // 숫자 검사기 boolean T / F 로 값을 내뱉음. 
+    public boolean isNumeric(String str) {
+        return Pattern.matches("^[0-9]*$", str);
+    }
+
+    public int insertSignupWis(SignupVOWis signupVOWis){
+
+        // 1. 패스워드 일치 확인
+        // 1-1. 값이 다르면? : 재시도
+        if ( !signupVOWis.getUserPw().equals( signupVOWis.getUserPwChk() ) ) {
+            // 서비스 -> 컨트롤러
+            // 컨트롤러에서 서비스가 정상작동한지 체크해서 
+            // 정상이라면? 화면이동하고
+            // 비정상이라면? 회원가입 화면으로 signupVO 가지고 돌아가라 동기적방식으로 추가한다.
+        	 return 2;
+        }
+
+        // 2. 전화번호 합치기
+        // lengthh 에서 전화번호 영어 숫자로 테스트를 하니까  숫자만 입력받는 정규식을 작성해야하고 ,
+        // 로직을 짜야할것같다.
+        String PhoneNumber1 = signupVOWis.getPhoneNumber1();
+        String PhoneNumber2 = signupVOWis.getPhoneNumber2();
+        String PhoneNumber3 = signupVOWis.getPhoneNumber3();
+        
+        boolean pNumber2 = isNumeric(PhoneNumber2);
+        boolean pNumber3 = isNumeric(PhoneNumber3);
+        
+        // 이프로 숫자인지 확인하고 랭스를 확인해서 자리수체크  
+        
+        if (PhoneNumber2.length() == 4 || PhoneNumber3.length() == 4 ){
+        } else {
+        	return 2; 
+        }
+        	
+        signupVOWis.setPhoneNumber( signupVOWis.getPhoneNumber1() +"-"+ signupVOWis.getPhoneNumber2() +"-"+ signupVOWis.getPhoneNumber3() );
+        //문자열 사이에 / - . 원하는거 입력해서 값 넘겨주기,
+        
+        // 3. 체크박스 Y아닐경우 체크
+        if (signupVOWis.getTermsBuyYn() == null) {
+        	signupVOWis.setTermsBuyYn("N");
+        }
+        if (signupVOWis.getTermsInfoYn() == null) {
+        	signupVOWis.setTermsInfoYn("N");
+        }
+        if (signupVOWis.getTermsSellYn() == null) {
+        	signupVOWis.setTermsSellYn("N");
+        }
+
+        // 인트형이기 떄문에 , 숫자를 리턴하는데, 실행된 횃수 가 담긴다 ,(즉 seq 처럼 그 숫자를 갖고 그 숫자가 1일경우 signupVo를 갖고온다)
+        return signupMapperWis.insertSignupWis(signupVOWis);
+    }
+    
+    public List<SignupVOWis> signupListwis(SignupVOWis signupVOwis){
+    	return signupMapperWis.signupListwis(signupVOwis);
+    }
+    
+
+}

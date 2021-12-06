@@ -1,0 +1,30 @@
+package com.cs.study.signup.vo;
+
+import lombok.Data;
+
+
+import org.apache.ibatis.type.Alias;
+
+@Data
+@Alias("signupVOwis")
+public class SignupVOWis {
+
+ 	private String seq;
+	private String userId;
+	private String userPw;
+	private String pwQuestion;
+	private String pwAnswer;
+	private String nickname;
+	private String phoneNumber;
+	private String phoneNumberM;
+	private String phoneNumberE;
+	private String gender;
+	private String address1;
+	private String address2;
+	private String termsInfoYn;
+	private String termsBuyYn;
+	private String termsSellYn;
+
+}
+
+

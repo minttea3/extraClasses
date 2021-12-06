@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cs.study.sample.mapper.JswMapper">
+    <select id="Baseballselect" resultType="JswBaseballVO" parameterType="JswBaseballVO">
+        SELECT 
+        FROM kcs.jsw_baseball
+        WHERE py_name = #{pyName}
+    </select>
+
+    <select id="selectBaseballList" resultType="JswBaseballVO" parameterType="JswBaseballVO">
+        SELECT py_name
+             , py_num
+             , py_popular
+             , py_sal
+             , py_team
+        FROM kcs.jsw_baseball
+        <where>
+            <if test="pyName != null and !pyName.equals('')">
+                AND py_name LIKE '%' || #{pyName} || '%'
+            </if>
+            <if test="pyTeam != null and !pyTeam.equals('')">
+                AND py_team LIKE '%' || #{pyTeam} || '%'
+            </if>
+        </where>
+        ORDER BY py_name
+    </select>
+
+    <update id="saveBaseball" parameterType="JswBaseballVO">
+        WITH UPSERT AS (
+        UPDATE kcs.jsw_baseball
+        SET py_name  = #{pyName}
+          , py_num = #{pyNum}
+        WHERE py_name = #{pyName} RETURNING *
+)
+        INSERT
+        INTO kcs.jsw_baseball ( py_name
+                       , py_num
+                       , py_popular
+                       , py_sal
+                       , py_team)
+        SELECT #{pyName}
+             , #{pyNum}
+             , #{pyPopular}
+             , #{pySal}
+             , #{pyTeam}
+       WHERE NOT EXISTS ( SELECT * FROM UPSERT )
+    </update>
+
+    <delete id="deleteBaseball" parameterType="JswBaseballVO">
+        DELETE
+        FROM kcs.jsw_baseball
+        WHERE py_name = #{pyName}
+    </delete> 
+</mapper>

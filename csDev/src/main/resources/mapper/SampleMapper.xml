@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cs.study.sample.mapper.SampleMapper">
+    <select id="selectSampleOne" resultType="sampleVO" parameterType="sampleVO">
+        SELECT user_id
+             , user_name
+             , user_phone
+        FROM kcs.tb_sample
+        WHERE USER_ID = #{userId}
+    </select>
+
+    <select id="selectSampleList" resultType="sampleVO" parameterType="sampleVO">
+        SELECT user_id
+             , user_name
+             , user_phone
+        FROM kcs.tb_sample
+        <where>
+            <if test="userId != null and !userId.equals('')">
+                AND user_id LIKE '%' || #{userId} || '%'
+            </if>
+            <if test="userName != null and !userName.equals('')">
+                AND user_name LIKE '%' || #{userName} || '%'
+            </if>
+            <if test="userPhone != null and !userPhone.equals('')">
+                AND user_phone LIKE '%' || #{userPhone} || '%'
+            </if>
+        </where>
+        ORDER BY user_id
+    </select>
+
+    <update id="saveSample" parameterType="sampleVO">
+        WITH UPSERT AS (
+        UPDATE kcs.tb_sample
+        SET user_name  = #{userName}
+          , user_phone = #{userPhone}
+        WHERE user_id = #{userId} RETURNING *
+)
+        INSERT
+        INTO kcs.tb_sample ( user_id
+                       , user_name
+                       , user_phone)
+        SELECT #{userId}
+             , #{userName}
+             , #{userPhone} WHERE NOT EXISTS ( SELECT * FROM UPSERT )
+    </update>
+
+    <insert id="insertSample" parameterType="sampleVO">
+        INSERT INTO kcs.tb_sample (
+             user_id
+           , user_name
+           , user_phone
+        ) VALUES (
+               #{userId}
+             , #{userName}
+             , #{userPhone}
+        )
+    </insert>
+
+    <update id="updateSample" parameterType="sampleVO">
+        UPDATE kcs.tb_sample SET
+            user_name  = #{userName}
+          , user_phone = #{userPhone}
+        WHERE user_id = #{userId}
+    </update>
+
+    <delete id="deleteSample" parameterType="sampleVO">
+        DELETE FROM kcs.tb_sample
+        WHERE user_id = #{userId}
+    </delete>
+</mapper>

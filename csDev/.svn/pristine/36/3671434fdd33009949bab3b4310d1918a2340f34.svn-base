@@ -1,0 +1,73 @@
+package com.cs.study.signup.controller;
+
+import com.cs.study.radioselect.service.DeptService;
+import com.cs.study.radioselect.vo.DeptVO;
+import com.cs.study.signup.service.SignupService;
+import com.cs.study.signup.service.SignupServiceJsw;
+import com.cs.study.signup.vo.SignupVOJsw;
+import com.cs.study.signup.vo.SignupVO;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+
+import javax.security.auth.message.callback.PrivateKeyCallback.Request;
+import javax.servlet.http.HttpServletRequest;
+
+@Controller
+public class SignupControllerJsw {
+
+    private final DeptService deptService;
+    private final SignupServiceJsw service;
+
+    public SignupControllerJsw(DeptService deptService, SignupServiceJsw service) {
+        this.deptService = deptService;
+        this.service = service;
+    }
+
+    @GetMapping("/signup/signupJsw")
+    public String signupJsw(Model model, SignupVOJsw svo,HttpServletRequest request){
+
+    	//그룹코드로 나누어진 데아터를 가져오기 위해 그룹을 호출한다 
+    	DeptVO qsVO = new DeptVO();
+    	qsVO.setDeptGrp("signup_question");
+    	List<DeptVO> questionList = deptService.selectDeptList(qsVO);
+    	model.addAttribute("questionList", questionList);
+    	
+       	DeptVO phoneVO = new DeptVO();
+       	phoneVO.setDeptGrp("signup_phone");
+       	List<DeptVO> phoneList = deptService.selectDeptList(phoneVO);
+       	model.addAttribute("phoneList", phoneList);
+    	
+       	DeptVO termVO = new DeptVO();
+       	termVO.setDeptGrp("signup_terms");
+    	List<DeptVO> termList = deptService.selectDeptList(termVO);
+    	model.addAttribute("termList", termList);
+    	
+    	
+		/*
+		 * String phone = request.getParameter("hp1"+"-"+"hp2"+"-"+"hp3");
+		 * System.out.println("11111"+ phone);
+		 */
+      	
+//    	String TermList = termList.get(0).getDeptName();
+    	
+//    	System.out.println("::::"+TermList);
+    	
+   
+    	
+        return "signup/signupJsw";
+    }
+    @PostMapping("/signup/signupJsw")
+    public String Insert(Model model, SignupVOJsw svo/*, @RequestParam(value="action", required=true) String action*/) {
+    
+             int saveCnt = service.insertSignUp(svo);
+    //         model.addAttribute("JOIN", saveCnt);
+             return "/main";
+    }
+
+    
+}

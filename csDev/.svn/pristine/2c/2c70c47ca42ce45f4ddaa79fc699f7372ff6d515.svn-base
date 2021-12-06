@@ -1,0 +1,22 @@
+package com.cs.study.signup.service;
+
+import org.springframework.stereotype.Service;
+
+import com.cs.study.signup.mapper.SignupMapperKej;
+import com.cs.study.signup.vo.SignupVOKej;
+
+@Service
+public class SignupServiceKej {
+    public final SignupMapperKej signupMapperKej;
+
+    public SignupServiceKej(SignupMapperKej signupMapperKej) {
+        this.signupMapperKej = signupMapperKej;
+    }
+
+    // 회원 등록
+    public int insertSignup(SignupVOKej signupVOKej) {
+        return signupMapperKej.insertSignup(signupVOKej);
+    }
+
+   
+}

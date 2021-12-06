@@ -1,0 +1,82 @@
+package com.cs.study.signup.controller;
+
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import com.cs.study.radioselect.service.DeptService;
+import com.cs.study.radioselect.vo.DeptVO;
+import com.cs.study.signup.service.SignupServiceKej;
+import com.cs.study.signup.vo.SignupVOKej;
+
+@Controller
+public class SignupControllerKej {
+
+    private final DeptService deptService;
+    private final SignupServiceKej signupServiceKej;
+
+    public SignupControllerKej(DeptService deptService, SignupServiceKej signupServiceKej) {
+        this.deptService = deptService;
+        this.signupServiceKej = signupServiceKej;
+    }
+
+    @GetMapping("/signup/signupKej")
+    public String signupKcs(Model model) {
+    		  //DEPT 테이블에서 질문 가져오기
+	    	  DeptVO deptQueVO = new DeptVO();
+	    	  deptQueVO.setDeptGrp("signup_question");
+		      List<DeptVO> questionList = deptService.selectDeptList( deptQueVO );
+//		      System.out.println("---------------------");
+//		      System.out.println("questionList"+questionList);
+//		      System.out.println("---------------------");
+		      model.addAttribute("questionList", questionList);
+		     
+		      //DEPT 테이블에서 전화번호 가져오기
+		      DeptVO deptTelVO = new DeptVO();
+		      deptTelVO.setDeptGrp("signup_phone");
+		      List<DeptVO> phoneList = deptService.selectDeptList( deptTelVO );
+//		      System.out.println("---------------------");
+//		      System.out.println("phoneList"+phoneList);
+//		      System.out.println("---------------------");
+		      model.addAttribute("phoneList", phoneList);
+		     
+		      //DEPT 테이블에서 약관 가져오기
+		      DeptVO deptTermsVO = new DeptVO();
+		      deptTermsVO.setDeptGrp("signup_terms");
+		      List<DeptVO> termsList = deptService.selectDeptList( deptTermsVO );
+//		      System.out.println("---------------------");
+//		      System.out.println("termsList"+termsList.get(0));
+//		      System.out.println("---------------------");
+		      
+		      model.addAttribute("termsList", termsList.get(0).getDeptName());
+		      
+
+        return "signup/signupKej";
+    }
+//    @PostMapping("/signup/signupKej")
+//    public String signupInsertKej(SignupVOKej signupVOKej, @RequestParam(value="action", required =true ) String action){
+//    	
+//    	if("insert".equals(action)) {
+//    	//user 테이블에 insert 하기
+//	      int insertSignup = signupServiceKej.insertSignup(signupVOKej);
+//    	}
+//	    return  "/signup/signupKej";
+//    }
+    @PostMapping("/insertFinish")
+    public String signupInsertFinish(Model model, SignupVOKej signupVOKej) {
+    	
+    	int insert = signupServiceKej.insertSignup(signupVOKej);
+		/*
+		 * String tIYn = signupVOKej.getTermsInfoYn(); String n= "N";
+		 * if("".equals(tIYn)||tIYn == null) { System.out.println("널이야");
+		 * signupVOKej.setTermsInfoYn("n"); }
+		 * System.out.println("tIYn"+tIYn+"--------------------------------------");
+		 */
+    	model.addAttribute("msg","축하합니다.🎉회원 가입이 성공했습니다.😊");
+    	model.addAttribute("url","/home");
+    	return "/signup/signupMsgKej";
+    }
+}

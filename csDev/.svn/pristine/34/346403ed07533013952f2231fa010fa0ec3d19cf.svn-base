@@ -1,0 +1,30 @@
+//����
+package com.cs.study.signup.service;
+
+import com.cs.study.signup.mapper.SignupMapper;
+import com.cs.study.signup.vo.SignupVO;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class SignupServiceRjh {
+    public final SignupMapper signupMapper;
+
+    public SignupServiceRjh(SignupMapper signupMapper) {
+        this.signupMapper = signupMapper;
+    }
+    public boolean insertSignup(SignupVO signupVO){
+    	
+    	if(signupVO.getUserPw().equals(signupVO.getUserPwChk())) {
+    		
+    		return false;
+    	} else {
+    		signupMapper.insertSignup(signupVO);
+    		return true;
+    	}
+    	
+
+    }
+
+}

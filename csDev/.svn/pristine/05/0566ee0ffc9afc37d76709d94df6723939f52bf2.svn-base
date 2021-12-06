@@ -1,0 +1,320 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: kimchangsu
+  Date: 2021. 8. 23.
+  Time: 오후 8:46
+  To change this template use File | Settings | File Templates.
+--%>
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <%@ include file="/WEB-INF/jsp/common/header.jsp" %>
+</head>
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Navbar -->
+    <jsp:include page="/WEB-INF/jsp/common/nav.jsp" />
+    <!-- End of Navbar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <jsp:include page="/WEB-INF/jsp/common/topbar.jsp" />
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">위인섭 회원가입</h1>
+                </div>
+                <!-- 요기가 컨텐츠 -->
+                <form:form id="join" name="join" action="/home" method="post">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="userId">ID</label>
+                                <input type="text" class="form-control" id="userId" name="userId" maxlength="20" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="userPw">PassWord</label>
+                                <input type="password" class="form-control" id="userPw" name="userPw" />
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="userPwCheck">PassWord 확인</label>
+                                <input type="password" class="form-control" id="userPwCheck" name="userPwCheck" onblur="pwCheck()"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="pwQuestion">비밀번호 질문</label>
+                                <select class="form-control" id="pwQuestion" name="pwQuestion">
+                                <c:forEach var="map" items="${signupquestionList}" varStatus="status">
+                           		<option value="${map.deptCode}">${map.deptName}</option>
+                            	 </c:forEach>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="pwAnswer">비밀번호 답변</label>
+                                <input type="text" class="form-control" id="pwAnswer" name="pwAnswer" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="nickname">닉네임</label>
+                                <input type="text" class="form-control" id="nickname" name="nickname" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="phoneNumber">전화번호</label> <!-- 여기 추가햇음 수정해도됨 아이디 네임 -->
+                                <select class="form-control" id="phoneNumberF" name="phoneNumberF" >
+                                    <c:forEach var="map" items="${signupphone}" varStatus="status">
+                           			<option value="${map.deptCode}">${map.deptName}</option>
+                            	 </c:forEach> 
+                                </select>
+                                 <input type="hidden" id="phoneNumber" name="phoneNumber" value="0">
+                            </div>
+                        </div>				<!--  전화번호 그냥 입력받을때 정규식 선언해서 정규식으로 막아버렸음.) -->
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="phoneNumber">&nbsp</label>
+                                <input type="text" class="form-control num" id="phoneNumberM" name="phoneNumberM" maxlength="4" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="phoneNumber">&nbsp</label>  <!-- maxlength="4" -->
+                                <input type="text" class="form-control num" id="phoneNumberE" name="phoneNumberE" maxlength="4" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="gender">성별</label>
+                             <div class="form-check">				 
+                                <input class="form-check-input" type="radio" value="M" name="gender" id="genderM">
+                               <label class="form-check-label" for="">
+                                    남자
+                                </label>
+                                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                                <input class="form-check-input" type="radio" value="W" name="gender" id="genderW">
+                                <label class="form-check-label" for="">
+                                    여자
+                                </label> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                        
+                            <div class="form-group">
+                                <label for="address1">주소</label>
+                                <input type="text" class="form-control" id="address1" name="address1" />
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="address2">상세주소</label>
+                                <input type="text" class="form-control" id="address2" name="address2" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="">약관</label>
+                                <textarea class="form-control" rows="6" id="signupterms" name="signupterms">${signupterms}</textarea>
+                            </div>
+<%--                              만약 약관이 여러개라면 이렇게 돌리자.
+                                  <c:forEach var="map" items="${signupphone}" varStatus="status">
+                           			<option value="${map.deptCode}">${map.deptName}</option>
+                            	 </c:forEach> signup_terms --%>
+                        </div>
+                    </div>
+                    <div class="row">					<!-- value="Y" 벨류값지우고텟 -->
+                        <div class="form-group">
+                            <label for="termsInfoYn">약관 동의</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="Y" name="termsInfoYn" id="termsInfoYn">
+                                <input type="hidden" name="termsInfoYn" value='N' id="termsInfoYn_hidden"/>
+                                <label class="form-check-label" for="termsInfoYn">
+                                    개인정보 동의
+                                </label>
+                                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                                <input class="form-check-input" type="checkbox" value="Y" name="termsBuyYn" id="termsBuyYn">
+                                <input type="hidden" name="termsBuyYn" value='N' id="termsBuyYn_hidden"/>
+                                <label class="form-check-label" for="termsBuyYn">
+                                    구매약관 동의
+                                </label>
+                                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                                <input class="form-check-input" type="checkbox" value="Y" name="termsSellYn" id="termsSellYn">
+                                <input type="hidden" name="termsSellYn" value='N' id="termsSellYn_hidden"/>
+                                <label class="form-check-label" for="termsSellYn">
+                                    판매약관 동의
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button name="join" id="join" value="insert" type="submit" class="btn btn-success">회원가입</button>
+                        
+                    </div>
+                </form:form>
+                <!-- 요기가 컨텐츠 끝 -->
+
+            </div>
+        </div>
+        <!-- Footer -->
+        <%@ include file="/WEB-INF/jsp/common/footer.jsp" %>
+        <!-- End of Footer -->
+    </div>
+    <!-- End of Content Wrapper -->
+</div>
+<!-- End of Page Wrapper -->
+<script>
+	
+	
+	// JSP 에서 사용되는 name=''값은 VO의이름과같아야한다.
+
+	$(document).ready(function(){
+		
+	});
+
+	// userID 정규식 아래정규식은 숫자와 영어로만 사용할수 있다.
+	// keyup 함수로 사용을 하였기때문에 처음에 1234~ 아이디를 입력했을때 alert를띄우면안되니,
+	// 글씨수 제한은 위에 userid 에서 옵션값을 추가해서 사용하도록 하겠다.
+	var enCheck = RegExp(/[^0-9a-zA-Z]$/);
+	
+	var num = /^[0-9]*$/; /* 숫자 정규식 */ 
+	
+	$('#userId').keyup(function(){
+		if(enCheck.test($('#userId').val())){
+			alert("아이디는 영어 소문자와 숫자만 사용하며, 20글자로 제한됩니다.");
+			$('#userId').val($('#userId').val().replace(/[^0-9a-zA-Z]/gi,''));
+		}
+	});
+	
+	// 전화번호 M / E 정규식으로 막기
+	
+	/* 이것을 함수를 사용해서 숫자만 입력받을수도 있다, 아니면 코드 두줄을 생성하기 싫으면 아스키코드로 사용해도될것이다.
+	하지만 난 그런 능력이 없으므로 가장 간단하고 편리하게 하기위해서 input type 를 number로 바꾸는 꼼수를 사용하였다. 흐흐
+	개 웃기네 ㅋㅋㅋ넘버로 바꾸니까 맥스랭스가 막힘 ㅎㅎ 
+	
+	머야 키다운 에러가많이 뜨는거같은데 왜이래 미첫나바
+	
+	짜증나~ 넘버로 어떻게든 해보자! */
+	/* 
+  	$('#phoneNumberM').keyup(function(){
+		if(enCheck.test($('#phoneNumberM').val())){
+			alert("전화번호 입력란은 - (하이픈) 을 제외한 숫자 4자리만 입력 가능합니다.");
+			$('#phoneNumberM').val($('#phoneNumberM').val().replace(/[^0-9a-zA-Z]/gi,''));
+		}
+	}); 
+	
+	$('#phoneNumberE').keyup(function(){
+		if(enCheck.test($('#phoneNumberE').val())){
+			alert("전화번호 입력란은 - (하이픈) 을 제외한 숫자 4자리만 입력 가능합니다.");
+			$('#phoneNumberE').val($('#phoneNumberE').val().replace(/[^0-9a-zA-Z]/gi,''));
+		}
+	});  */
+	 
+	// 비밀번호와 비밀번호 재입력 일치하는지 확인하는 로직
+	// 완벽하지 않지만 onblur="pwCheck()" 를 사용해서 위에 비밀번호 두번째 입력하는곳에 
+	// 포커스 아웃이 될때 이벤트를 호출해서 휴호성 검사를 진행 하였다. 
+	// 설계도에선 불가능하게 해야하지만, 일단 여기까지만..
+	
+	function pwCheck(){
+		var p1 = $('#userPw').val();
+		var p2 = $('#userPwCheck').val();
+    	//var p1 = document.getElementById('userPw').value; // $('#userPw').val(); 			위와 소스 같음 아이디선언하지않고 걍 제이쿼리로 바로불러서 사용 
+    	//var p2 = document.getElementById('userPwCheck').value; // ('#userPwCheck').val();
+    	if( p1 != p2 ) {
+    	alert("비밀번호가 일치 하지 않습니다");
+    	$('#userPw').val('');
+    	$('#userPwCheck').val('');
+     	return false;
+     	}
+    };
+	
+
+	// 1. 회원가입을 누를때 클릭이벤트로 약관 YN 을 불러온다.
+	// 2. YB는 약관이 체크되어있으면 그 체크박스의 벨류값을 Y else N 으로 한다.
+	// 3. 회원가입을할때 버튼누르면, 클릭이벤트 함수를 불러 벨류값을 확인한다.
+
+	$(document).on('change', 'input[name="termsInfoYn"]', function() {
+		if ($("#termsInfoYn").is(":checked")) {
+			$("#termsInfoYn_hidden").attr("disabled", true);
+		} else {
+			$("#termsInfoYn_hidden").attr("disabled", false);
+		}
+	});
+	$(document).on('change', 'input[name="termsBuyYn"]', function() {
+		if ($("#termsBuyYn").is(":checked")) {
+			$("#termsBuyYn_hidden").attr("disabled", true);
+		} else {
+			$("#termsBuyYn_hidden").attr("disabled", false);
+		}
+	});
+	$(document).on('change', 'input[name="termsSellYn"]', function() {
+		if ($("#termsSellYn").is(":checked")) {
+			$("#termsSellYn_hidden").attr("disabled", true);
+		} else {
+			$("#termsSellYn_hidden").attr("disabled", false);
+		}
+	});
+	
+	//전화번호 앞자리 변경시 (은진누나꺼 소스 코드 참조,)
+	$("#phoneNumberF").change(function(){
+		var num1 = $('#phoneNumberF>option:selected').text();
+		var num2 = $("#phoneNumberM").val();
+		var num3 = $("#phoneNumberE").val();
+		
+			var numTotal = num1+"-"+num2+"-"+num3;
+			var phoneNum = $("#phoneNumber").val(numTotal);
+
+	});
+	
+	//전화번호 text 3개 합치기
+	$('.num').focusout(function(){
+	   var num1 = $('#phoneNumberF>option:selected').text();
+	   var num2 = $("#phoneNumberM").val();
+	   var num3 = $("#phoneNumberE").val();
+	   
+	      var numTotal = num1+"-"+num2+"-"+num3;
+	      var phoneNum = $("#phoneNumber").val(numTotal);
+	   
+	});
+</script>
+
+
+</body>
+</html>
+

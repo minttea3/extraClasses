@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cs.study.signup.mapper.SignupMapperWis">
+	<insert id="insertSignupWis" parameterType="signupVOWis">
+		INSERT INTO kcs.tb_user(
+			user_id,
+			user_pw,
+			pw_question,
+			pw_answer,
+			nickname,
+			phone_number,
+			gender,
+			address1,
+			address2,
+			terms_info_yn,
+			terms_buy_yn,
+			terms_sell_yn
+		) VALUES (
+			 #{userId}
+			, #{userPw}
+			, #{pwQuestion}
+			, #{pwAnswer}
+			, #{nickname}
+			, #{phoneNumber}
+			, #{gender}
+			, #{address1}
+			, #{address2}
+			, #{termsInfoYn}
+			, #{termsBuyYn}
+			, #{termsSellYn}
+		)
+	</insert>
+	<insert id="addSignupWis" parameterType="signupVOWis">
+		INSERT INTO kcs.tb_user(
+			user_id,
+			user_pw,
+			pw_question,
+			pw_answer,
+			nickname,
+			phone_number,
+			gender,
+			address1,
+			address2,
+			terms_info_yn,
+			terms_buy_yn,
+			terms_sell_yn
+		) VALUES (
+					 #{userId}
+				 , #{userPw}
+				 , #{pwQuestion}
+				 , #{pwAnswer}
+				 , #{nickname}
+				 , #{phoneNumber}
+				 , #{gender}
+				 , #{address1}
+				 , #{address2}
+				 , #{termsInfoYn}
+				 , #{termsBuyYn}
+				 , #{termsSellYn}
+				 )
+	</insert>
+		<select id="signupListwis" resultType="signupVOWis" parameterType="signupVOWis">
+			SELECT
+			user_id,
+			seq,
+			user_pw,
+			pw_question,
+			pw_answer,
+			nickname,
+			phone_number,
+			gender,
+			address1,
+			address2,
+			terms_info_yn,
+			terms_buy_yn,
+			terms_sell_yn
+			FROM kcs.tb_user
+			<where>
+				<if test="userId != null and !userId.equals('')">
+					AND user_id LIKE '%' || #{userId} || '%'
+				</if>
+				<if test="nickname != null and !nickname.equals('')">
+					AND nickname LIKE '%' || #{nickname} || '%'
+				</if>
+				<if test="gender != null and !gender.equals('')">
+					AND gender LIKE '%' || #{gender} || '%'
+				</if>
+			</where>
+			ORDER BY seq DESC
+		</select>
+
+	<update id="ListUpdate" parameterType="signupVOwis">
+		UPDATE tb_user
+		set
+		    user_id = #{userId},
+			user_pw = #{userPw},
+			pw_question = #{pwQuestion},
+			pw_answer = #{pwAnswer},
+			nickname = #{nickname},
+			phone_number = #{phoneNumber},
+			gender = #{gender},
+			address1 = #{address1},
+			address2 = #{address2},
+			terms_info_yn = #{termsInfoYn},
+			terms_buy_yn = #{termsBuyYn},
+			terms_sell_yn = #{termsSellYn}
+		where seq = #{seq}
+	</update>
+
+
+	<delete id="ListDelete" parameterType="signupVOwis">
+		DELETE FROM tb_user
+		WHERE seq = #{seq}
+	</delete>
+</mapper>

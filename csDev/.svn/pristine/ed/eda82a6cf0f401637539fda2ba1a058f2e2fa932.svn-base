@@ -1,0 +1,75 @@
+package com.cs.study.signup.service;
+
+import com.cs.study.signup.mapper.SignupMapper;
+import com.cs.study.signup.mapper.SignupMapperLmg;
+import com.cs.study.signup.vo.SignupVOLmg;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+
+@Service
+public class SignupServiceLmg {
+	
+    public final SignupMapperLmg radioSelectMapper;
+
+    
+    
+    public SignupServiceLmg(SignupMapperLmg radioSelectMapper) {
+        this.radioSelectMapper = radioSelectMapper;
+    }
+   
+    public List<SignupVOLmg> signupListLmg(SignupVOLmg signupVO) {
+    	
+    	return radioSelectMapper.signupListLmg(signupVO);
+    }
+    
+    public int insertRadioSelect(SignupVOLmg signupVO) {
+
+            // 1. 패스워드 일치 확인
+            // 1-1. 값이 다르면? : 재시도
+    	
+    		if ( !signupVO.getUserPw().equals(signupVO.getUserPwchk())) {
+    			return 0;
+    		}
+    	
+                // 서비스 -> 컨트롤러
+                // 컨트롤러에서 서비스가 정상작동한지 체크해서 
+                // 정상이라면? 화면이동하고
+                // 비정상이라면? 회원가입 화면으로 signupVO 가지고 돌아가라 동기적방식으로 추가한다.
+            	
+            	//서비스 영역에는 매퍼부분에 있는걸 호출에서 적는거라고 생각하셔야해요
+            	// 지금 민규씨가 리턴으로 보낸건 페이지 이동인데
+            	// 0으로 어떻게 만들까
+            	// 거기도 보시면 반환 타입이 있다고 생각하시면 될거같아여
+            	
+            	
+            	
+            
+            //입력 폼을 돌아갈려면 리턴값을 문자열으로 가야하는데 숫자값으로 어떻게 돌아가냐 이말이죠?
+            //인트로 어떻게 폼으로 돌아가냐?
+
+            // 2. 전화번호 합치기
+            signupVO.setPhoneNumber( signupVO.getPhoneNumber1() + "-" + signupVO.getPhoneNumber2() + "-" +signupVO.getPhoneNumber3() );
+
+            //문자열 사이에 / - . 원하는거 입력해서 값 넘겨주기,
+            
+            // 3. 체크박스 Y아닐경우 체크
+            if (signupVO.getTermsBuyYn() == null) {
+                signupVO.setTermsBuyYn("N");
+            }
+            if (signupVO.getTermsInfoYn() == null) {
+                signupVO.setTermsInfoYn("N");
+            }
+            if (signupVO.getTermsSellYn() == null) {
+                signupVO.setTermsSellYn("N");
+            }
+
+            return radioSelectMapper.insertRadioSelect(signupVO);
+        }
+
+
+
+	
+}

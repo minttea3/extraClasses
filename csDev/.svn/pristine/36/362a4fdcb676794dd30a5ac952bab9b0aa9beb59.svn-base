@@ -1,0 +1,77 @@
+package com.cs.study.signup.controller;
+
+import com.cs.study.commcode.service.CommCodeService;
+import com.cs.study.commcode.vo.CommCodeDtlVO;
+import com.cs.study.signup.service.SignupServiceRjh;
+import com.cs.study.signup.vo.SignupVO;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
+
+@Controller
+public class SignupControllerRjh {
+
+    private final CommCodeService commCodeService;
+    private final SignupServiceRjh signupServiceRjh;
+
+    public SignupControllerRjh(CommCodeService commCodeService, SignupServiceRjh signupServiceRjh) {
+        this.commCodeService = commCodeService;
+        this.signupServiceRjh = signupServiceRjh;
+    }
+
+    @GetMapping("/signup/signupRjh")
+    public String signupRjh(Model model, SignupVO signupVO) {
+
+    	CommCodeDtlVO dtlVO = new CommCodeDtlVO();
+    	dtlVO.setMstCd("M0002");
+        List<CommCodeDtlVO> signupQuestionList = commCodeService.selectCommCodeDtlList(dtlVO);
+        model.addAttribute("signupQuestionList", signupQuestionList);
+
+      
+        dtlVO.setMstCd("M0001");
+        List<CommCodeDtlVO> signupPhoneList = commCodeService.selectCommCodeDtlList(dtlVO);
+        model.addAttribute("signupPhoneList", signupPhoneList);
+
+      
+        dtlVO.setMstCd("M0004");
+        List<CommCodeDtlVO> signupTermsList = commCodeService.selectCommCodeDtlList(dtlVO);
+        if (signupTermsList.size() > 0){
+            model.addAttribute("signupTerms", signupTermsList.get(0).getDtlNm());
+        }
+
+        return "signup/signupRjh";
+    }
+
+    @PostMapping("/signup/insertSignupRjh")
+    public String insertSignup(Model model, SignupVO signupVO) {
+    	
+    	Boolean result = signupServiceRjh.insertSignup(signupVO);
+    	
+    	if(result) {
+    		CommCodeDtlVO dtlVO = new CommCodeDtlVO();
+        	dtlVO.setMstCd("M0002");
+            List<CommCodeDtlVO> signupQuestionList = commCodeService.selectCommCodeDtlList(dtlVO);
+            model.addAttribute("signupQuestionList", signupQuestionList);
+
+          
+            dtlVO.setMstCd("M0001");
+            List<CommCodeDtlVO> signupPhoneList = commCodeService.selectCommCodeDtlList(dtlVO);
+            model.addAttribute("signupPhoneList", signupPhoneList);
+
+          
+            dtlVO.setMstCd("M0004");
+            List<CommCodeDtlVO> signupTermsList = commCodeService.selectCommCodeDtlList(dtlVO);
+            if (signupTermsList.size() > 0){
+                model.addAttribute("signupTerms", signupTermsList.get(0).getDtlNm());
+            }
+            
+            return "signup/signupRjh";
+    	} else {
+    		return "main";
+    	}
+    	
+    }
+}

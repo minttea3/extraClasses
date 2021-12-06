@@ -1,0 +1,36 @@
+package com.cs.study.signup.service;
+
+import com.cs.study.signup.mapper.SignupMapperLmg;
+import com.cs.study.signup.vo.SignupVOLmg;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class SignupServiceLmg {
+    public final SignupMapperLmg radioSelectMapper;
+
+    public SignupServiceLmg(SignupMapperLmg radioSelectMapper) {
+        this.radioSelectMapper = radioSelectMapper;
+    }
+
+    public SignupVOLmg selectRadioSelectOne(SignupVOLmg radioSelectVO){
+        return radioSelectMapper.selectRadioSelectOne(radioSelectVO);
+    }
+
+    public List<SignupVOLmg> selectRadioSelectList(SignupVOLmg radioSelectVO) {
+        return radioSelectMapper.selectRadioSelectList(radioSelectVO);
+    }
+
+    public int insertRadioSelect(SignupVOLmg radioSelectVO) {
+        return radioSelectMapper.insertRadioSelect(radioSelectVO);
+    }
+
+    public int updateRadioSelect(SignupVOLmg radioSelectVO) {
+        return radioSelectMapper.updateRadioSelect(radioSelectVO);
+    }
+
+    public int deleteRadioSelect(SignupVOLmg radioSelectVO) {
+        return radioSelectMapper.deleteRadioSelect(radioSelectVO);
+    }
+}

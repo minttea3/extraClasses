@@ -1,0 +1,62 @@
+package com.cs.study.signup.controller;
+
+import com.cs.study.radioselect.service.DeptService;
+
+import com.cs.study.radioselect.vo.DeptVO;
+import com.cs.study.radioselect.vo.RadioSelectVO;
+import com.cs.study.signup.service.SignupServiceWis;
+import com.cs.study.signup.vo.SignupVOWis;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
+
+@Controller
+public class SignupControllerWis {
+
+    private final DeptService deptService;
+    private final SignupServiceWis signupServiceWis;
+    
+    public SignupControllerWis(DeptService deptService, SignupServiceWis signupServiceWis) {
+        this.deptService = deptService;
+        this.signupServiceWis = signupServiceWis;
+    }	
+    // 회원가입시 비밀번호 질문 갖고 오기.
+    @GetMapping("/signup/signupWis")
+    public String signupKcs(Model model, SignupVOWis signupVOWis){
+        DeptVO signup_question = new DeptVO();
+        signup_question.setDeptGrp("signup_question");
+        List<DeptVO> signupquestionList = deptService.selectDeptList( signup_question );
+        model.addAttribute("signupquestionList", signupquestionList);
+
+     // 회원가입시 테이블에있는 전화번호 앞자리 갖고오기 
+        DeptVO signup_phone = new DeptVO();
+        signup_phone.setDeptGrp("signup_phone");
+        List<DeptVO> signupphone = deptService.selectDeptList( signup_phone );
+        model.addAttribute("signupphone", signupphone);
+       
+     // 회원가입시 테이블에있는 약관 갖고오기, List 로 0번째 (1번째) 인덱스 사용해서 갖고오기
+        DeptVO signup_terms = new DeptVO();
+        signup_terms.setDeptGrp("signup_terms");
+        List<DeptVO> signupterms = deptService.selectDeptList( signup_terms );
+        model.addAttribute("signupterms", signupterms.get(0).getDeptName());
+        
+
+        
+     // 회원가입시 gender 에 있는거 사용하기위해서 
+//        SignupVOWis gender = new SignupVOWis();
+//        gender.setGender("gender");
+//        List<SignupVOWis> genderList = signupServiceWis.signupSelectList( gender );
+//        model.addAttribute("genderList", genderList);
+
+        return "signup/signupWis";
+    }
+    
+    @PostMapping("/home")
+    public String joinUpdate(Model model, SignupVOWis signupVOWis){
+        signupServiceWis.insertRadioSelect(signupVOWis);
+        return "main";
+    }
+}

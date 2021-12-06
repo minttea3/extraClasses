@@ -1,0 +1,31 @@
+package com.cs.study.signup.vo;
+
+import lombok.Data;
+import org.apache.ibatis.type.Alias;
+
+@Data
+@Alias("signupKyjVO")
+public class SignupKyjVO {
+	
+	private int seq;
+    private String userId;//아이디
+    private String userPw;//패스워드;
+    private String pwQuestion;//패스워드질문
+    private String pwAnswer;//패스워드확인
+    private String nickname;//닉네임
+    private String phoneNumber;//전화번호
+    private String gender;//성별
+    private String address1;//주소
+    private String address2;//주소
+    private String termsInfoYn;//개인정보동의
+    private String termsBuyYn;//개인정보동의
+    private String termsSellYn;//개인정보동의
+    
+    
+    
+    
+   
+    
+    
+}
+

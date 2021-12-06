@@ -1,0 +1,16 @@
+package com.cs.study.signup.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.cs.study.signup.vo.SignupVOKej;
+
+@Mapper
+public interface SignupMapperKej {
+	// 회원 등록
+    public int insertSignup(SignupVOKej signVOKej);
+
+    // 회원 조회
+    public List<SignupVOKej> SignupSelectList(SignupVOKej signupVOKej);
+}

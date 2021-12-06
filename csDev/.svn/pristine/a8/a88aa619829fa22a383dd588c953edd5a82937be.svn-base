@@ -1,0 +1,167 @@
+package com.cs.study.signup.service;
+
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.springframework.stereotype.Service;
+
+import com.cs.study.signup.mapper.SignupMapperKej;
+import com.cs.study.signup.vo.SignupVOKej;
+
+@Service
+public class SignupServiceKej {
+    public final SignupMapperKej signupMapperKej;
+
+    public SignupServiceKej(SignupMapperKej signupMapperKej) {
+        this.signupMapperKej = signupMapperKej;
+    }
+
+    
+    // 회원 등록 ( 회원가입 1 )
+    public int insertSignup(SignupVOKej signupVOKej) {
+    	   return signupMapperKej.insertSignup(signupVOKej);
+    }
+    
+    
+    //--------------- 2번째 회원 가입용 -------------------------------------
+	// 회원 등록 2번째 만드는거 
+	public int insertSignup2(SignupVOKej signupVOKej) {
+    	
+		// ----- 1. 아이디 영,소,대,숫자 입력가능 -----
+    	// 1-1. 메소드 호출하여 boolean 변수에 담기
+		boolean userId = isStr(signupVOKej.getUserId());
+    	
+    	// 1-2. 무슨 값 담기는지 확인ㅋㅋ
+    	System.out.println("-------------------------------");
+    	System.out.println("signupVOKej.getUserId() 길이::"+signupVOKej.getUserId().length());
+    	System.out.println("userId::"+userId);
+    	System.out.println("-------------------------------");
+    	
+    	// 1-3. 영,소,대문자가 아닌게 입력되었을 경우 아이디 널값 담고, 리턴함. 
+    	if(userId == false) {
+    		signupVOKej.setUserId("");
+    		return -1;
+    	}
+    	
+    	// ----- 2. 비밀번호 체크 -----
+    	// 비밀번호  대문자,숫자,소문자 입력 꼭 해야함 8이상 20글자로 제한 
+    	// 2-1. 정규식을 사용하여 매치시킴.
+    	String regExp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$";
+    	boolean userPw = signupVOKej.getUserPw().matches(regExp); //패스워드 체크
+    	boolean userPwChk = signupVOKej.getUserPwChk().matches(regExp); // 패스워트 확인부분도 체크
+    	
+    	System.out.println("------------------");
+    	System.out.println("userPw"+userPw);
+    	System.out.println("userPwChk"+userPwChk);
+    	System.out.println("1"+signupVOKej.getUserPw());
+    	System.out.println("1"+signupVOKej.getUserPwChk());
+    	System.out.println("signupVOKej.getUserPw().equals(signupVOKej.getUserPwChk())"+signupVOKej.getUserPw().equals(signupVOKej.getUserPwChk()));
+    	System.out.println("------------------");
+    	
+    	if(userPw == false || userPwChk == false) { // 2-2. 정규식 적용 안 될 경우에 
+    		signupVOKej.setUserPw("");
+			signupVOKej.setUserPwChk("");
+    		return -2;
+    	}else{ // 2-3. 정규식으로 제대로 되어있다면
+    		// 2-4. 패스워드가 일치하지 않는다면
+    		if(!signupVOKej.getUserPw().equals(signupVOKej.getUserPwChk())) {
+        		signupVOKej.setUserPw("");
+    			signupVOKej.setUserPwChk("");
+    			return -2;
+        	}
+    		
+		}
+    	
+		
+		
+		
+    	// ----- 3. 전화번호 합치기 ----- 끝
+    	//  숫자인지 먼저 확인을 하고 그 다음에 자리수 확인을 해야함.
+    	// 3-1. 숫자인지 체크하는 메서드 대입
+    	boolean num2 = isNumeric(signupVOKej.getPhoneNumber2());
+    	boolean num3 = isNumeric(signupVOKej.getPhoneNumber3());
+
+    	String number1 = signupVOKej.getPhoneNumber1();
+    	String number2 = signupVOKej.getPhoneNumber2();
+    	String number3 = signupVOKej.getPhoneNumber3();
+    	System.out.println("----------");
+    	System.out.println("number2::"+number2.length());
+    	System.out.println("number3::"+number3.length());
+    	System.out.println("----------");
+    	
+    	// ----- 전화번호 ----- 
+    	// 3-2. 숫자 인지 확인
+    	if(num2 == true && num3 == true) { // 숫자가 맞다면
+    		
+        	// 3-3. 전화번호2, 3 자리수 확인 (2는 3~4자리 , 3은 4자리만 받음) 후 4자리 넘으면 실행 안되게 함.
+        	if(number2.length() == 3 || number2.length() == 4 && number3.length() == 4) {
+        		// 3-5. 전화번호 합치기
+        		signupVOKej.setPhoneNumber(number1+"-"+number2+"-"+number3);
+        	}else{ // 3-6. 전화번호 자리수가 안맞으면 값 지우기
+        		signupVOKej.setPhoneNumber2("");
+        		signupVOKej.setPhoneNumber3("");
+        		return 0;
+        	}
+    	}else { //3-4 숫자가 아니라면 값 지우기
+    		signupVOKej.setPhoneNumber2("");
+    		signupVOKej.setPhoneNumber3("");
+    		return 0;
+    	}
+
+    	
+    	
+    	
+        
+    	// ----- 4. 주소 한글만 입력가능 -----
+    	// 4-1. 주소 한글만 가능한 정규식 사용.
+        boolean address = isKorean(signupVOKej.getAddress1());
+    	if(address == false) { // 4-2. 한글외 입력시 vo값 없애기
+    		signupVOKej.setAddress1("");
+    		return -3;
+    	}
+
+    	
+    	// ----- 5. 체크박스 Y아닐경우 체크 -----
+        if (signupVOKej.getTermsBuyYn() == null) {
+        	signupVOKej.setTermsBuyYn("N");
+        }
+        if (signupVOKej.getTermsInfoYn() == null) {
+        	signupVOKej.setTermsInfoYn("N");
+        }
+        if (signupVOKej.getTermsSellYn() == null) {
+        	signupVOKej.setTermsSellYn("N");
+        }
+        System.out.println("---------");
+        System.out.println("젠더"+signupVOKej.getGender());
+        System.out.println("---------");
+    
+        
+        // ----- 6. gender 값이 널일경우 체크 -----
+        if("".equals(signupVOKej.getGender()) ||  signupVOKej.getGender() == null) {
+        	return -4;
+        }
+
+        return signupMapperKej.insertSignup(signupVOKej);
+    }
+    
+    // 회원 등록용 - 전화번호 숫자 검사기
+    public boolean isNumeric(String str) {
+    	return Pattern.matches("^[0-9]*$", str);
+    }
+    
+    // 한국어 검사기
+    public boolean isKorean(String str) {
+    	return Pattern.matches("[가-힣ㄱ-ㅎㅏ-ㅣ]*$", str);
+    }
+    //한글,영문,숫자 입력가능. 특수문자 입력제한
+    public boolean isStr(String str) {
+    	return Pattern.matches("[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]*$", str);
+    }
+    
+    
+    // 회원 조회
+    public List<SignupVOKej> SignupSelectList(SignupVOKej signupVOKej){
+    	return signupMapperKej.SignupSelectList(signupVOKej);
+    }
+   
+}

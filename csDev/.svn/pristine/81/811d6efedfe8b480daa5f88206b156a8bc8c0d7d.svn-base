@@ -1,0 +1,27 @@
+package com.cs.study.signup.service;
+import com.cs.study.radioselect.vo.DeptVO;
+import com.cs.study.signup.mapper.SignupMapperWis;
+import com.cs.study.signup.vo.SignupVOWis ;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class SignupServiceWis {
+    public final SignupMapperWis signupMapperWis;
+
+    public SignupServiceWis(SignupMapperWis signupMapperWis) {
+        this.signupMapperWis = signupMapperWis;
+    }
+
+    public int insertRadioSelect(SignupVOWis signupVOWis) {
+        return signupMapperWis.signUpInsertDept(signupVOWis);
+    }
+    
+//    public int phoenadd(SignupVOWis signupVOWis) {
+//    	phoneNumber = new phoneNumber();
+//    	phoneNumber =phonenumber + phonenumberM + phonenumber
+//    	È¤Àº 
+//    	phoneNumber append(phoneNumberE,phoneNumberM)
+//    	return signupMapperWis.insertRadioSelect
+//    }
+}

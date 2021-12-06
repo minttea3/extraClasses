@@ -1,0 +1,19 @@
+package com.cs.study.signup.mapper;
+
+import com.cs.study.signup.vo.SignupVOWis;
+
+
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
+@Mapper
+public interface SignupMapperWis {
+
+    public int signUpInsertDept(SignupVOWis signupVOWis);
+    
+//    아래 부분은 리스트로 받아온걸 (기존 라디오 셀렉 하던것 복붙했는데 리스트라안되는것같아서 일단지움)
+//    public List<SignupVOWis> signupSelectList(SignupVOWis signupVOWis);
+
+    
+}

@@ -1,0 +1,142 @@
+package com.cs.study.signup.controller;
+
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.cs.study.radioselect.service.DeptService;
+import com.cs.study.radioselect.vo.DeptVO;
+import com.cs.study.signup.service.SignupServiceKej;
+import com.cs.study.signup.vo.SignupVOKej;
+
+@Controller
+public class SignupControllerKej2 {
+
+    private final DeptService deptService;
+    private final SignupServiceKej signupServiceKej;
+
+    public SignupControllerKej2(DeptService deptService, SignupServiceKej signupServiceKej) {
+        this.deptService = deptService;
+        this.signupServiceKej = signupServiceKej;
+    }
+
+    @GetMapping("/signup/signupKej2")
+    // 회원 가입 화면으로 이동~
+    public String signupKej(Model model) {
+    	// DEPT 테이블에서 컬럼명이 dept_grp 이고 그 값이 signup_question 인 질문 가져오기
+    	DeptVO deptVO = new DeptVO();
+    	// vo에 질문 컬럼 값을 넣음   	
+    	deptVO.setDeptGrp("signup_question");
+    	//리스트 메소드 호출
+    	List<DeptVO> deptQuestionList =  deptService.selectDeptList(deptVO);
+    	model.addAttribute("deptQuestionList",deptQuestionList);
+    	
+    	// DEPT 테이블에서 where절 dept_grp =  signup_phone전화번호 앞자리 가져오기
+    	deptVO = new DeptVO();
+    	deptVO.setDeptGrp("signup_phone");
+    	List<DeptVO> deptTelList = deptService.selectDeptList(deptVO);
+    	model.addAttribute("deptTelList",deptTelList);
+    	
+    	// DEPT 테이블에서 where 조건 dept_grp = signup_terms 약관 앞자리 가져오기
+    	deptVO = new DeptVO();
+    	deptVO.setDeptGrp("signup_terms");
+    	List<DeptVO> deptTermsList = deptService.selectDeptList(deptVO);
+    	// 리스트가 가진 것 중에서도 컬럼명이 dept_name 이거 인 것만 가져오기
+    	if(deptTermsList.size() > 0) {
+    		// deptTermsList.get(0) 이렇게 가져오면 0번째 배열의 값 모두 가져오는데 jsp에서 이름으로 호출해야하니 밑에 처럼 이름도 아예 넣어주자.  
+    		model.addAttribute("deptTermsList",deptTermsList.get(0).getDeptName());
+    	}
+    	
+    	return "/signup/signupKej2";
+    }
+    // 리스트 페이지 
+    @GetMapping("/signup/signupKej2List")
+    public String signupKej2List(Model model, SignupVOKej signupVOKej) {
+    	List<SignupVOKej> SignupSelectList = signupServiceKej.SignupSelectList(signupVOKej);
+    	model.addAttribute("SignupSelectList",SignupSelectList);
+    	model.addAttribute("signupVOKej2",signupVOKej);
+    	return "/signup/signupKej2List";
+    }
+    
+//    @PostMapping("/signupKej2")
+//    public String signupInsertKej(SignupVOKej signupVOKej, @RequestParam(value="action", required =true ) String action){
+//    	
+//    	if("insert".equals(action)) {
+//    	//user 테이블에 insert 하기
+//	      int insertSignup = signupServiceKej.insertSignup(signupVOKej);
+//    	}
+//	    return  "/signup/signupKej";
+//    }
+    @PostMapping("/signup/insertFinishKej2")
+    //회원 가입 기능
+    public String signupInsertFinish2(Model model, SignupVOKej signupVOKej) {
+    	
+    	// 인서트 메서드 변수에 담기 (기본값 : 정상실행시 1, 실패시 다른 수)
+    	int count = signupServiceKej.insertSignup2(signupVOKej);
+    	String url = "";
+    	
+    	//성공시 메세지+경로보내고, 실패인 경우 메세지 보내기
+    	if(count == 1 ) {
+    		//int insert = signupServiceKej.insertSignup2(signupVOKej);
+    		model.addAttribute("msg","축하합니다.🎉회원 가입이 성공했습니다.😊");
+    		model.addAttribute("url","/signup/signupKej2List");
+    		url = "/signup/signupMsgKej";
+    	}else if(count == 0) { //전화번호가 틀렸을때 
+    		model.addAttribute("msg","회원 가입 실패입니다..ㅠㅠ 전화번호 다시 작성 하세요!!😢");
+    	}else if(count == -1) { // 아이디가 틀렸을때
+    		model.addAttribute("msg","회원 가입 실패입니다..ㅠㅠ 아이디를 다시 작성 하세요!!😢");
+    	}else if(count == -2) { // 비밀번호가 틀렸을때
+    		model.addAttribute("msg","회원 가입 실패입니다..ㅠㅠ 비밀번호를 다시 작성 하세요!!😢");
+    	}else if(count == -3) { // 주소 한글만 입력가능한데 그 외에 입력되었을때
+    		model.addAttribute("msg","회원 가입 실패입니다..ㅠㅠ 주소를 다시 작성 하세요!!😢");
+    	}else if(count == -4) {
+    		model.addAttribute("msg","회원 가입 실패입니다..ㅠㅠ 성별 체크를 하셔야합니다!!!😢");
+    		
+    	}
+    	// 실패인 경우 경로,dept  보여줄것 
+    	if(count != 1) {
+    		model.addAttribute("signupVOKej",signupVOKej);
+    		//model.addAttribute("url","/signup/signupKej2");
+    		
+    		// DEPT 테이블에서 컬럼명이 dept_grp 이고 그 값이 signup_question 인 질문 가져오기
+        	DeptVO deptVO = new DeptVO();
+        	// vo에 질문 컬럼 값을 넣음   	
+        	deptVO.setDeptGrp("signup_question");
+        	//리스트 메소드 호출
+        	List<DeptVO> deptQuestionList =  deptService.selectDeptList(deptVO);
+        	model.addAttribute("deptQuestionList",deptQuestionList);
+        	
+        	// DEPT 테이블에서 where절 dept_grp =  signup_phone전화번호 앞자리 가져오기
+        	deptVO = new DeptVO();
+        	deptVO.setDeptGrp("signup_phone");
+        	List<DeptVO> deptTelList = deptService.selectDeptList(deptVO);
+        	model.addAttribute("deptTelList",deptTelList);
+        	
+        	// DEPT 테이블에서 where 조건 dept_grp = signup_terms 약관 앞자리 가져오기
+        	deptVO = new DeptVO();
+        	deptVO.setDeptGrp("signup_terms");
+        	List<DeptVO> deptTermsList = deptService.selectDeptList(deptVO);
+        	// 리스트가 가진 것 중에서도 컬럼명이 dept_name 이거 인 것만 가져오기
+        	if(deptTermsList.size() > 0) {
+        		// deptTermsList.get(0) 이렇게 가져오면 0번째 배열의 값 모두 가져오는데 jsp에서 이름으로 호출해야하니 밑에 처럼 이름도 아예 넣어주자.  
+        		model.addAttribute("deptTermsList",deptTermsList.get(0).getDeptName());
+        	}
+    		url = "/signup/signupKej2";
+    	}
+		/*
+		 * String tIYn = signupVOKej.getTermsInfoYn(); String n= "N";
+		 * if("".equals(tIYn)||tIYn == null) { System.out.println("널이야");
+		 * signupVOKej.setTermsInfoYn("n"); }
+		 * System.out.println("tIYn"+tIYn+"--------------------------------------");
+		 */
+    	//return "/signup/signupMsgKej";
+    	return url;
+    }
+    
+    
+    
+}

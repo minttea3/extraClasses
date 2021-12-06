@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cs.study.radioselect.mapper.DeptMapper">
+    <select id="selectDeptOne" resultType="deptVO" parameterType="deptVO">
+        SELECT dept_code
+             , dept_name
+             , dept_grp
+        FROM kcs.tb_dept
+        WHERE dept_code = #{deptCode}
+    </select>
+
+    <select id="selectDeptList" resultType="deptVO" parameterType="deptVO">
+        SELECT dept_code
+             , dept_name
+             , dept_grp
+        FROM kcs.tb_dept
+        <where>
+            <if test="deptCode != null and !deptCode.equals('')">
+                AND dept_code LIKE '%' || #{deptCode} || '%'
+            </if>
+            <if test="deptGrp != null and !deptGrp.equals('')">
+                AND dept_grp = #{deptGrp}
+            </if>
+        </where>
+        ORDER BY dept_code
+    </select>
+
+    <insert id="insertDept" parameterType="deptVO">
+        INSERT INTO kcs.tb_dept (
+             dept_code
+           , dept_name
+           , dept_grp
+        ) VALUES (
+               #{deptCode}
+             , #{deptName}
+             , #{deptGrp}
+        )
+    </insert>
+
+    <update id="updateDept" parameterType="deptVO">
+        UPDATE kcs.tb_dept SET
+            dept_name  = #{deptName}
+            ,dept_grp  = #{deptGrp}
+        WHERE dept_code = #{deptCode}
+    </update>
+
+    <delete id="deleteDept" parameterType="deptVO">
+        DELETE FROM kcs.tb_dept
+        WHERE dept_code = #{deptCode}
+    </delete>
+</mapper>

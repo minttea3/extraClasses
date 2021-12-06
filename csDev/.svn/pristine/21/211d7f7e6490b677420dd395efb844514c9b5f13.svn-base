@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cs.study.signup.mapper.SignupMapperLmg">
+	<insert id="insertSignup" parameterType="signupVO">
+		INSERT INTO kcs.tb_user(
+			user_id,
+			user_pw,
+			pw_question,
+			pw_answer,
+			nickname,
+			phone_number,
+			gender,
+			address1,
+			address2,
+			terms_info_yn,
+			terms_buy_yn,
+			terms_sell_yn
+		) VALUES (
+			 #{userId}
+			, #{userPw}
+			, #{pwQuestion}
+			, #{pwAnswer}
+			, #{nickname}
+			, #{phoneNumber}
+			, #{gender}
+			, #{address1}
+			, #{address2}
+			, #{termsInfoYn}
+			, #{termsBuyYn}
+			, #{termsSellYn}
+		)
+	</insert>
+	
+	<select id="signuplist" resultType="signupVO" parameterType="signupVO">
+        SELECT user_id
+             , user_pw
+             , phone_number
+             , gender
+        FROM kcs.tb_user
+   
+        <where>
+            <if test="userId != null and !userId.equals('')">
+                AND user_id LIKE '%' || #{userId} || '%'
+            </if>
+         
+        </where>
+        ORDER BY user_id
+    </select>
+	
+</mapper>

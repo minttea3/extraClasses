@@ -1,0 +1,79 @@
+package com.cs.study.signup.controller;
+
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.cs.study.radioselect.service.DeptService;
+import com.cs.study.radioselect.vo.DeptVO;
+import com.cs.study.sample.vo.VisitVO;
+import com.cs.study.signup.service.SignupServiceWis3;
+import com.cs.study.signup.vo.SignupVOWis;
+
+@Controller
+public class SignupControllerWis3 {
+
+    private final DeptService deptService;
+    private final SignupServiceWis3 signupServiceWis3;
+
+    public SignupControllerWis3(DeptService deptService, SignupServiceWis3 signupServiceWis3) {
+        this.deptService = deptService;
+        this.signupServiceWis3 = signupServiceWis3;
+    }
+
+    @GetMapping("/signup/signupWis3")
+    public String signupWis(Model model, SignupVOWis signupVOwis) {
+
+        DeptVO deptVO = new DeptVO();
+        deptVO.setDeptGrp("signup_question");
+        List<DeptVO> signupQuestionList = deptService.selectDeptList(deptVO);
+        model.addAttribute("signupQuestionList", signupQuestionList);
+
+        deptVO = new DeptVO();
+        deptVO.setDeptGrp("signup_phone");
+        List<DeptVO> signupPhoneList = deptService.selectDeptList(deptVO);
+        model.addAttribute("signupPhoneList", signupPhoneList);
+
+        deptVO = new DeptVO();
+        deptVO.setDeptGrp("signup_terms");
+        List<DeptVO> signupTermsList = deptService.selectDeptList(deptVO);
+        if (signupTermsList.size() > 0){
+            model.addAttribute("signupTerms", signupTermsList.get(0).getDeptName());
+        }
+
+        return "signup/signupWis3";
+    }
+    
+	   @GetMapping("/signup/signupListWis")
+	    public String signupListwis(Model model, SignupVOWis signupVOwis){
+
+	        List<SignupVOWis> signupListwis = signupServiceWis3.signupListwis(signupVOwis);
+	        model.addAttribute("signupListwis", signupListwis);
+	        model.addAttribute("signupVOWis", signupVOwis);
+	       
+	        return "signup/signupListWis";
+	    }
+
+    @PostMapping("/signup/insertSignupWis")
+    public String insertSignupWis(Model model, SignupVOWis signupVOwis) {
+        int insertCnt = signupServiceWis3.insertSignupWis(signupVOwis);
+        // 즉 결론은 insertCnt = 1 or 2 왜냐면 아까 if 문에서 비번이나 전번이 탈락시 리턴2를 반환하기떄문에
+        if (insertCnt ==1){
+        	return "/signup/signupListWis";
+        } else {
+        	model.addAttribute("signupVOwis", signupVOwis);
+        	
+        	return "signup/signupWis3";
+        	
+        }
+        //return "/signup/signupListWis"; 
+        //인텔리 제이에서도 잡히나/ 테스트
+        // 이클립스에서도 잡히나 테스트중 ㅎㅎㅎ 되라제발좀짜증나네
+    }
+    
+}

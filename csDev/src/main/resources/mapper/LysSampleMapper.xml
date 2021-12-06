@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cs.study.sample.mapper.LysSampleMapper">
+    <select id="selectSampleOne" resultType="sampleVO" parameterType="sampleVO">
+        SELECT user_id
+             , user_name
+             , user_phone
+        FROM kcs.tb_sample
+        WHERE USER_ID = #{userId}
+    </select>
+
+    <select id="selectSampleList" resultType="sampleVO" parameterType="sampleVO">
+        SELECT user_id
+             , user_name
+             , user_phone
+        FROM kcs.tb_sample
+        <where>
+            <if test="userId != null and !userId.equals('')">
+                AND user_id LIKE '%' || #{userId} || '%'
+            </if>
+            <if test="userName != null and !userName.equals('')">
+                AND user_name LIKE '%' || #{userName} || '%'
+            </if>
+            <if test="userPhone != null and !userPhone.equals('')">
+                AND user_phone LIKE '%' || #{userPhone} || '%'
+            </if>
+        </where>
+        ORDER BY user_id
+    </select>
+
+    <update id="saveSample" parameterType="sampleVO">
+        WITH UPSERT AS (
+        UPDATE kcs.tb_sample
+        SET user_name  = #{userName}
+          , user_phone = #{userPhone}
+        WHERE user_id = #{userId} RETURNING *
+)
+        INSERT
+        INTO kcs.tb_sample ( user_id
+                       , user_name
+                       , user_phone)
+        SELECT #{userId}
+             , #{userName}
+             , #{userPhone} WHERE NOT EXISTS ( SELECT * FROM UPSERT )
+    </update>
+
+    <insert id="insertSample" parameterType="sampleVO">
+        INSERT INTO kcs.tb_sample (
+             user_id
+           , user_name
+           , user_phone
+        ) VALUES (
+               #{userId}
+             , #{userName}
+             , #{userPhone}
+        )
+    </insert>
+
+    <update id="updateSample" parameterType="sampleVO">
+    UPDATE kcs.tb_sample SET
+        user_name  = #{userName}
+      , user_phone = #{userPhone}
+    WHERE user_id = #{userId}
+    </update>
+    
+    <select id="selectCode" parameterType="commCodeDtlVO" resultType="commCodeDtlVO">
+    /*selectQuestion*/
+    SELECT 
+		mst_cd
+		, dtl_cd
+		, dtl_nm
+	FROM kcs.tb_comm_code_dtl 
+	WHERE mst_cd = #{mstCd} 
+	
+	ORDER BY dtl_nm
+    </select>
+    
+    <select id="selectSignupList" parameterType="lyssignupVO" resultType="lyssignupVO">
+    /*selectSignupList*/
+    SELECT
+    	seq
+		, user_id
+		, user_pw
+		, pw_question
+		, pw_answer
+		, gender
+		, nickname
+		, address1
+		, address2
+		, SPLIT_PART(phone_number, '-', 1) as phoneNumber1
+		, SPLIT_PART(phone_number, '-', 2) as phoneNumber2
+		, SPLIT_PART(phone_number, '-', 3) as phoneNumber3
+		, terms_info_yn
+		, terms_buy_yn
+		, terms_sell_yn
+	FROM kcs.tb_user_lys 
+	<where>
+	    <if test="userId != null and !userId.equals('')">
+	        AND user_id LIKE '%' || #{userId} || '%'
+	    </if>
+	    <if test="nickname != null and !nickname.equals('')">
+	        AND nickname LIKE '%' || #{nickname} || '%'
+	    </if>
+	    <if test="gender != null and !gender.equals('')">
+	        AND gender LIKE '%' || #{gender} || '%'
+	    </if>
+	    
+	</where>
+	ORDER BY seq 
+	
+    </select>
+    
+    <insert id="insertSignupLys" parameterType="lyssignupVO" >
+    /*insertSignupLys*/
+	INSERT INTO kcs.tb_user_lys(
+		user_id
+		, seq
+		, user_pw
+		, pw_question
+		, pw_answer
+		, nickname
+		, phone_number
+		, gender
+		, address1
+		, address2
+		, terms_info_yn
+		, terms_buy_yn
+		, terms_sell_yn)
+	VALUES (
+		#{userId}
+		, coalesce((select max(seq) from tb_user_lys), 0) + 1
+		, #{userPw}
+		, #{pwQuestion}
+		, #{pwAnswer}
+		, #{nickname}
+		, #{phoneNumber1} || '-' || #{phoneNumber2} || '-' || #{phoneNumber3}
+		, #{gender}
+		, #{address1}
+		, #{address2}
+		, coalesce(#{termsInfoYn}, 'N')
+		, coalesce(#{termsBuyYn}, 'N')
+		, coalesce(#{termsSellYn}, 'N')
+	);
+    </insert>
+    
+    <update  id="updateList" parameterType="lyssignupVO">
+    /*updateList*/
+    	UPDATE kcs.tb_user_lys
+		SET	  user_id 		= #{userId}
+			, user_pw 		= #{userPw}
+			, pw_question 	= #{pwQuestion}
+			, pw_answer		= #{pwAnswer}
+			, nickname 		= #{nickname}
+			, phone_number 	= #{phoneNumber1} || '-' || #{phoneNumber2} || '-' || #{phoneNumber3}
+			, gender 		= #{gender}
+			, address1 		= #{address1}
+			, address2 		= #{address2}
+			, terms_info_yn = coalesce(#{termsInfoYn}, 'N')
+			, terms_buy_yn 	= coalesce(#{termsBuyYn}, 'N')
+			, terms_sell_yn = coalesce(#{termsSellYn}, 'N')
+		WHERE seq = #{seq}
+    </update>
+    
+    <delete  id="deleteList" parameterType="lyssignupVO">
+    /*deleteList*/   	
+   	DELETE 
+   	FROM kcs.tb_user_lys
+   	WHERE seq = #{seq}
+    </delete>
+</mapper>

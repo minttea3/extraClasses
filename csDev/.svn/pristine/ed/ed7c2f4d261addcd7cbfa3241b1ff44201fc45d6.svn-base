@@ -1,0 +1,126 @@
+package com.cs.study.signup.controller;
+
+import com.cs.study.radioselect.service.DeptService;
+import com.cs.study.radioselect.vo.DeptVO;
+import com.cs.study.sample.vo.JswBaseballVO;
+import com.cs.study.signup.service.SignupService;
+import com.cs.study.signup.service.SignupServiceJsw;
+import com.cs.study.signup.vo.SignupVOJsw;
+import com.cs.study.signup.vo.SignupVO;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.security.auth.message.callback.PrivateKeyCallback.Request;
+import javax.servlet.http.HttpServletRequest;
+
+@Controller
+public class SignupControllerJsw {
+
+    private final DeptService deptService;
+    private final SignupServiceJsw service;
+
+    public SignupControllerJsw(DeptService deptService, SignupServiceJsw service) {
+        this.deptService = deptService;
+        this.service = service;
+    }
+
+    @GetMapping("/signup/signupJsw")
+    public String signupJsw(Model model, SignupVOJsw svo,HttpServletRequest request){
+
+    	//그룹코드로 나누어진 데아터를 가져오기 위해 그룹을 호출한다 
+    	DeptVO qsVO = new DeptVO();
+    	qsVO.setDeptGrp("signup_question");
+    	List<DeptVO> questionList = deptService.selectDeptList(qsVO);
+    	model.addAttribute("questionList", questionList);
+    	
+       	DeptVO phoneVO = new DeptVO();
+       	phoneVO.setDeptGrp("signup_phone");
+       	List<DeptVO> phoneList = deptService.selectDeptList(phoneVO);
+       	model.addAttribute("phoneList", phoneList);
+    	
+       	DeptVO termVO = new DeptVO();
+       	termVO.setDeptGrp("signup_terms");
+    	List<DeptVO> termList = deptService.selectDeptList(termVO);
+    	model.addAttribute("termList", termList);
+    	  if (termList.size() > 0){
+              model.addAttribute("signup_terms", termList.get(0).getDeptName());
+            
+          }
+
+    	
+		/*
+		 * String phone = request.getParameter("hp1"+"-"+"hp2"+"-"+"hp3");
+		 * System.out.println("11111"+ phone);
+		 */
+      	
+//    	String TermList = termList.get(0).getDeptName();
+    	
+//    	System.out.println("::::"+TermList);
+    	
+   
+    	
+        return "signup/signupJsw";
+    }
+    
+    @GetMapping("/signup/signupListJsw")
+    public String selectMemberlList(Model model, SignupVOJsw svo){
+    	System.out.println("--------List---------------");
+        List<SignupVOJsw> signupListJsw = service.signupListJsw(svo);
+        model.addAttribute("signupListJsw", signupListJsw);
+        model.addAttribute("SignupVOJsw", svo);
+
+        return "/signup/signupListJsw";
+   }
+    
+    
+    
+    @PostMapping("/signup/signupJsw")
+    public String Insert(Model model, SignupVOJsw svo) {
+        // 서비스가 정상이라면?? 
+        // 정상 화면으로 이동
+//      회원가입 리스트 화면을 추가로 만드세요
+//        
+//        정규식은 서비스에서 사용 하도록 노력 해 보 세요
+//        https://redcoder.tistory.com/182
+//        
+// 		회원가입을 하는도중에 비밀번호 에서 값이 다를 경우 만들어둔 회원가입 리스트를 리턴한다.
+//        비밀번호와 비밀번호 체크의 값이 동일하지 않을경우 리턴을 하면서, signupVo에 있는 입력된 값들을 가지고와서 리스트화먄에 뿌린다.
+//        전화번호에 숫자만 받을수 있도록 설정해야한다.
+//        아이디는 영어 소문자 대문자 숫자 20글자 미만
+//        주소는 앞에 address1은 한글만 입력 가능 하게 하기. 
+//        gender 에서 남 / 여 선택이 되지 않았을 경우 알림을 띄워서 선택을 할수 있도록 한다.
+//        닉네임 10글자 제한 특수문자 제한
+//        비밀번호 입력할때 대문자, 소문자, 숫자 입력을 꼭 하기로.
+//        사용자 아이디, 비밀번호, INPUT창에 placeorder 사용해서 위에 적은 가이드라인 적어서 가이드 해주기.
+        // 비정상 이라면??
+//        return
+        // 회원가입 화면으로 signupVO 가지고 이동해라
+        // 회원가입 화면은 최초에 데이터없이 갓을까??
+        // 질문답변, 전화번호앞자리, 약관
+    	
+    			int saveCnt = service.insertSignUp(svo);
+    		
+    			
+    			if(saveCnt == 0) {	
+    				
+    				model.addAttribute("resignupVO", svo);
+    
+    				System.out.println("fail"+svo);
+    				
+    				return "/signup/signupJsw";
+    			}
+    			
+    			return "main";
+       }
+       
+    
+
+    }
+
+    

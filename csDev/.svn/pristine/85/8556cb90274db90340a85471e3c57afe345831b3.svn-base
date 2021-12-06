@@ -1,0 +1,26 @@
+package com.cs.study.signup.mapper;
+
+import com.cs.study.signup.vo.SignupKyjVO;
+import com.cs.study.signup.vo.SignupVO;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
+@Mapper
+public interface SignupKyjMapper {
+
+	SignupKyjVO selectRadioSelectOne(SignupKyjVO radioSelectVO);
+
+	List<SignupKyjVO> selectRadioSelectList(SignupKyjVO radioSelectVO);
+
+	int insertRadioSelect(SignupKyjVO radioSelectVO);
+
+	int updateRadioSelect(SignupKyjVO radioSelectVO);
+
+	int deleteRadioSelect(SignupKyjVO radioSelectVO);
+
+
+
+
+
+}

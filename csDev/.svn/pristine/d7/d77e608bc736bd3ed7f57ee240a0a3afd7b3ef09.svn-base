@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.cs.study.signup.mapper.SignupMapperLmg">
+	<select id="selectDeptOne" resultType="signupVOLmg"
+		parameterType="signupVOLmg">
+		SELECT dept_code
+		, dept_name
+		, dept_grp
+		FROM kcs.tb_dept
+		WHERE dept_code = #{deptCode}
+	</select>
+
+	<select id="selectDeptList" resultType="signupVOLmg"
+		parameterType="signupVOLmg">
+		SELECT dept_code
+		, dept_name
+		, dept_grp
+		FROM kcs.tb_dept
+		<where>
+			<if test="deptCode != null and !deptCode.equals('')">
+				AND dept_code LIKE '%' || #{deptCode} || '%'
+			</if>
+			<if test="deptGrp != null and !deptGrp.equals('')">
+				AND dept_grp = #{deptGrp}
+			</if>
+		</where>
+		ORDER BY dept_code
+	</select>
+
+	<insert id="insertRadioSelect" parameterType="signupVOLmg">
+		INSERT INTO kcs.tb_user (
+		user_id
+		,user_pw
+		,pw_question
+		,pw_answer
+		,nickname
+		,phone_number
+		,gender
+		,address1
+		,address2
+		,terms_info_yn
+		,terms_buy_yn
+		,terms_sell_yn
+		) VALUES (
+		#{userId}
+		, #{userPw}
+		, #{pwQuestion}
+		, #{pwAnswer}
+		, #{nickname}
+		, #{phoneNumber}
+		, #{gender}
+		, #{address1}
+		, #{address2}
+		, #{termsInfoYn}
+		, #{termsBuyYn}
+		, #{termsSellYn}
+		
+		)
+	</insert>
+
+	<update id="updateDept" parameterType="signupVOLmg">
+		UPDATE kcs.tb_dept SET
+		dept_name = #{deptName}
+		,dept_grp = #{deptGrp}
+		WHERE dept_code = #{deptCode}
+	</update>
+
+	<delete id="deleteDept" parameterType="signupVOLmg">
+		DELETE FROM kcs.tb_dept
+		WHERE dept_code = #{deptCode}
+	</delete>
+</mapper>

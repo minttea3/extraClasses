@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.cs.study.signup.mapper.SignupMapperLmg">
+	<select id="selectRadioSelectOne" resultType="signupVOLmg"
+		parameterType="signupVOLmg">
+		SELECT  user_id
+		,user_pw
+		,pw_question
+		,pw_answer
+		,nickname
+		,phone_number
+		,gender
+		,address1
+		,address2
+		,terms_info_yn
+		,terms_buy_yn
+		,terms_sell_yn
+		FROM kcs.tb_user
+		WHERE user_id = #{userId}
+	</select>
+
+	<select id="signupListLmg" resultType="signupVOLmg"
+		parameterType="signupVOLmg">
+		SELECT user_id
+		,user_pw
+		,pw_question
+		,pw_answer
+		,nickname
+		,phone_number
+		,gender
+		,address1
+		,address2
+		,terms_info_yn
+		,terms_buy_yn
+		,terms_sell_yn
+		FROM kcs.tb_user
+		<!-- <where>
+			<if test="deptCode != null and !deptCode.equals('')">
+				AND dept_code LIKE '%' || #{deptCode} || '%'
+			</if>
+			<if test="deptGrp != null and !deptGrp.equals('')">
+				AND dept_grp = #{deptGrp}
+			</if>
+		</where> -->
+		ORDER BY seq desc
+	</select>
+
+	<insert id="insertRadioSelect" parameterType="signupVOLmg">
+		INSERT INTO kcs.tb_user (
+		user_id
+		,user_pw
+		,pw_question
+		,pw_answer
+		,nickname
+		,phone_number
+		,gender
+		,address1
+		,address2
+		,terms_info_yn
+		,terms_buy_yn
+		,terms_sell_yn
+		) VALUES (
+		#{userId}
+		, #{userPw}
+		, #{pwQuestion}
+		, #{pwAnswer}
+		, #{nickname}
+		, #{phoneNumber}
+		, #{gender}
+		, #{address1}
+		, #{address2}
+		, #{termsInfoYn}
+		, #{termsBuyYn}
+		, #{termsSellYn}
+		
+		)
+	</insert>
+
+	<update id="updateRadioSelect" parameterType="signupVOLmg">
+		UPDATE kcs.tb_user SET
+		dept_name = #{deptName}
+		,dept_grp = #{deptGrp}
+		WHERE dept_code = #{deptCode}
+	</update>
+
+	<delete id="deleteRadioSelect" parameterType="signupVOLmg">
+		DELETE FROM kcs.tb_user
+		WHERE dept_code = #{deptCode}
+	</delete>
+</mapper>

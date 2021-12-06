@@ -1,0 +1,22 @@
+package com.cs.study.signup.vo;
+
+import lombok.Data;
+import org.apache.ibatis.type.Alias;
+
+@Data
+@Alias("signupVOKej")
+public class SignupVOKej {
+	private String userId;		// ID
+	private String userPw;		// password
+	private String pwQuestion;	// 질문
+	private String pwAnswer;	// 답변
+	private String nickname;	// 닉네임
+	private String phoneNumber;	// 전화번호
+	private String gender;		// 성별
+	private String address1;	// 주소
+	private String address2;	// 상세 주소
+	private String termsInfoYn;	// 약관동의 1
+	private String termsBuyYn;	// 약관동의 2
+	private String termsSellYn;	// 약관동의 3
+}
+

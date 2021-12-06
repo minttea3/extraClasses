@@ -1,0 +1,67 @@
+#Datasource Configuration
+server.port = 18080
+spring.datasource.hikari.maximum-pool-size = 4
+spring.datasource.driver-class-name=net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+spring.datasource.url = jdbc:log4jdbc:postgresql://35.209.74.28:5432/csdb?allowMultiQueries=true
+#spring.datasource.url = jdbc:log4jdbc:postgresql://localhost:5432/cs?allowMultiQueries=true
+spring.datasource.username = kcs
+spring.datasource.password = 1233
+#====================================================================================================
+#                                              JSP 설정
+#====================================================================================================
+spring.mvc.view.prefix=/WEB-INF/jsp/
+spring.mvc.view.suffix=.jsp
+server.servlet.jsp.init-parameters.development=true
+
+#DevTools
+spring.devtools.livereload.enabled = true
+thymeleaf.cache = false
+spring.devtools.restart.enabled = true
+
+
+#====================================================================================================
+#                                              Query Logging
+#====================================================================================================
+#logging.level.org.springframework= debug
+#logging.level.org.springframework.web= debug
+
+#logging.level.org.springframework.security=INFO
+logging.level.jdbc.sqlonly=OFF
+logging.level.jdbc.sqltiming=DEBUG
+logging.level.jdbc.audit=OFF
+logging.level.jdbc.resultset=OFF
+logging.level.jdbc.resultsettable=DEBUG
+logging.level.jdbc.connection=OFF
+# mapper 이하를 로깅 위치로 설정.
+logging.level.com.cs.csplatformv2.sample.mapper=DEBUG
+
+
+#====================================================================================================
+#                                              MyBatis 설정
+#====================================================================================================
+# mybatis 매핑 type을 짧게 쓰기 위한 설정
+mybatis.type-aliases-package=com.cs.study.*.vo
+mybatis.mapper-locations=/mapper/**/*.xml
+# Camel Case
+mybatis.configuration.map-underscore-to-camel-case=true
+# Parameter Log
+#mybatis.default-scripting-language-driver=com.cs.config.objControll.EnhanceMybatisLanguageDriver
+spring.jpa.properties.hibernate.format_sql=true
+
+
+#====================================================================================================
+#                                             Error properties
+#====================================================================================================
+##응답에 exception의 내용을 포함할지 여부
+#server.error.include-exception= false
+##오류 응답에 stacktrace 내용을 포함할 지 여부
+#server.error.include-stacktrace=never
+## 오류 응답을 처리할 Handler의 경로
+server.error.path=/errorPage
+## 서버 오류 발생시 브라우저에 보여줄 기본 페이지 생성 여부
+#server.error.whitelabel.enabled=false
+
+#server Encoding
+#spring.http.encoding.charset=UTF-8
+#spring.http.encoding.enabled=true
+#spring.http.encoding.force=true

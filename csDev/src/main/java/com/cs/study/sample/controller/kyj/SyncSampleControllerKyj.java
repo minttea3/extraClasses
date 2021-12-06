@@ -1,0 +1,44 @@
+package com.cs.study.sample.controller.kyj;
+
+import com.cs.study.sample.service.SampleService;
+import com.cs.study.sample.vo.SampleVO;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+
+@Controller
+public class SyncSampleControllerKyj {
+
+    private final SampleService sampleService;
+
+    public SyncSampleControllerKyj(SampleService sampleService) {
+        this.sampleService = sampleService;
+    }
+
+  
+    @GetMapping("/syncSampleFormKyj")
+    public String syncSampleForm(Model model, SampleVO sampleVO){
+        if (!StringUtils.isEmpty( sampleVO.getUserId() )){
+            SampleVO selectSample = sampleService.selectSampleOne(sampleVO); 
+            model.addAttribute("sampleVO", selectSample);
+        }
+        return "sample/syncSampleKyj/syncSampleFormKyj";
+    }
+    @PostMapping("/syncSampleFormSaveKyj")
+    public String syncSampleFormSave(Model model, SampleVO sampleVO, @RequestParam(value="action", required=true) String action){
+        if ( "save".equals(action) ){
+            int saveCnt = sampleService.saveSample(sampleVO);
+        }else if ( "delete".equals(action) ){
+            int deleteCnt = sampleService.deleteSample(sampleVO);
+        }
+        return "redirect:/syncSampleListKyj";
+    }
+    
+
+    
+}

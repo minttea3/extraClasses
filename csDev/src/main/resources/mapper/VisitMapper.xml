@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 
+Country
+city
+vdate1
+ -->
+ 
+<mapper namespace="com.cs.study.sample.mapper.VisitMapper">
+    <select id="selectVisitOne" resultType="VisitVO" parameterType="VisitVO">
+        SELECT Country
+             , city
+             , vdate1
+        FROM kcs.visit_wis
+        WHERE Country = #{country}
+    </select>
+
+    <select id="selectVisitList" resultType="VisitVO" parameterType="VisitVO">
+        SELECT Country
+             , city
+             , vdate1
+        FROM kcs.visit_wis
+        <where>
+            <if test="Country != null and !Country.equals('')">
+                AND Country LIKE '%' || #{Country} || '%'
+            </if>
+            <if test="city != null and !city.equals('')">
+                AND city LIKE '%' || #{city} || '%'
+            </if>
+            <if test="vdate1 != null and !vdate1.equals('')">
+                AND vdate1 LIKE '%' || #{vdate1} || '%'
+            </if>
+        </where>
+        ORDER BY Country
+    </select>
+
+    <update id="saveVisit" parameterType="VisitVO">
+        WITH UPSERT AS (
+        UPDATE kcs.visit_wis
+        SET Country  = #{Country}
+          , city = #{city}
+        WHERE Country = #{Country} RETURNING *
+)
+        INSERT
+        INTO kcs.visit_wis ( Country
+                       , city
+                       , vdate1)
+        SELECT #{Country}
+             , #{city}
+             , #{vdate1} WHERE NOT EXISTS ( SELECT * FROM UPSERT )
+    </update>
+
+    <delete id="deleteVisit" parameterType="VisitVO">
+        DELETE
+        FROM kcs.visit_wis
+        WHERE Country = #{Country}
+    </delete>
+</mapper>
